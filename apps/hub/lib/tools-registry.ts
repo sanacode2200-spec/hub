@@ -37,10 +37,10 @@ export const tools: Tool[] = [
   {
     slug: "qr-generator",
     name: "QR Generator",
-    description: "No limits, SVG & PNG, no ads, scan test",
+    description: "AI neon QR codes for social links and campaigns",
     category: "generate",
     icon: "◼",
-    status: "soon",
+    status: "live",
     url: "/tools/qr-generator",
   },
   {
