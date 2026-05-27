@@ -18,7 +18,7 @@ const dmMono = DM_Mono({
 export const metadata: Metadata = {
   title: "Toolbox — Simple free tools, nothing else",
   description:
-    "ブラウザだけで使える無料ツール集。登録不要・広告なし・データ保存なし。MOV→MP4変換、QRコード生成など。",
+    "A collection of free browser tools. No signup, no ads, no data stored. MOV to MP4, QR generator, and more.",
 };
 
 export default function RootLayout({
@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja">
+    <html lang="en">
       <body
         className={`${instrumentSerif.variable} ${dmMono.variable} antialiased`}
       >

@@ -28,7 +28,7 @@ export const tools: Tool[] = [
   {
     slug: "mov-to-mp4",
     name: "MOV → MP4",
-    description: "iPhoneの動画をそのまま変換",
+    description: "Convert iPhone MOV videos to MP4 instantly",
     category: "video",
     icon: "🎬",
     status: "live",
@@ -37,7 +37,7 @@ export const tools: Tool[] = [
   {
     slug: "qr-generator",
     name: "QR Generator",
-    description: "制限なし・SVG対応・広告なし",
+    description: "No limits, SVG & PNG, no ads, scan test",
     category: "generate",
     icon: "◼",
     status: "soon",
@@ -46,7 +46,7 @@ export const tools: Tool[] = [
   {
     slug: "heic-to-jpg",
     name: "HEIC → JPG",
-    description: "iPhoneの写真をどこでも開ける形式に",
+    description: "Convert iPhone photos to a universal format",
     category: "image",
     icon: "⬡",
     status: "soon",
@@ -55,7 +55,7 @@ export const tools: Tool[] = [
   {
     slug: "image-compress",
     name: "Image Compress",
-    description: "画質を保ったまま軽量化",
+    description: "Reduce file size without losing quality",
     category: "image",
     icon: "◈",
     status: "soon",
@@ -64,7 +64,7 @@ export const tools: Tool[] = [
   {
     slug: "ogp-generator",
     name: "OGP Generator",
-    description: "SNSシェア画像をプレビュー",
+    description: "Preview and generate OGP share images",
     category: "generate",
     icon: "▣",
     status: "soon",
@@ -73,28 +73,10 @@ export const tools: Tool[] = [
   {
     slug: "json-formatter",
     name: "JSON Formatter",
-    description: "整形・バリデーション即時実行",
+    description: "Format and validate JSON instantly",
     category: "dev",
     icon: "⟨⟩",
     status: "soon",
     url: "/tools/json-formatter",
-  },
-  {
-    slug: "password-gen",
-    name: "Password Gen",
-    description: "安全なパスワードを即生成",
-    category: "generate",
-    icon: "⬡",
-    status: "soon",
-    url: "/tools/password-gen",
-  },
-  {
-    slug: "color-converter",
-    name: "Color Converter",
-    description: "HEX / RGB / HSL 変換",
-    category: "dev",
-    icon: "◕",
-    status: "soon",
-    url: "/tools/color-converter",
   },
 ];
