@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, DM_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const instrumentSerif = Instrument_Serif({
@@ -13,6 +14,18 @@ const dmMono = DM_Mono({
   variable: "--font-dm-mono",
   subsets: ["latin"],
   weight: ["300", "400", "500"],
+});
+
+const apoc = localFont({
+  src: "./fonts/Apoc-Revelations.woff2",
+  variable: "--font-apoc",
+  display: "swap",
+});
+
+const omotenashi = localFont({
+  src: "./fonts/OmotenashiMincho.otf",
+  variable: "--font-omotenashi",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -29,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${instrumentSerif.variable} ${dmMono.variable} antialiased`}
+        className={`${instrumentSerif.variable} ${dmMono.variable} ${apoc.variable} ${omotenashi.variable} antialiased`}
       >
         {children}
       </body>
