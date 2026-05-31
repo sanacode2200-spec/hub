@@ -9,12 +9,12 @@
 }
 
 :root {
-  --hub-bg: #070807;
-  --hub-panel: rgba(255, 255, 255, 0.045);
-  --hub-line: rgba(255, 255, 255, 0.11);
-  --hub-muted: rgba(255, 255, 255, 0.48);
-  --hub-soft: rgba(255, 255, 255, 0.72);
-  --hub-accent: #c9e936;
+  --hub-bg: #080706;
+  --hub-panel: rgba(255, 255, 255, 0.04);
+  --hub-line: rgba(255, 255, 255, 0.09);
+  --hub-muted: rgba(255, 255, 255, 0.46);
+  --hub-soft: rgba(255, 255, 255, 0.70);
+  --hub-accent: #e2d0b0;
 }
 
 body {
@@ -32,8 +32,8 @@ body {
   min-height: 100vh;
   overflow: hidden;
   background:
-    radial-gradient(circle at 20% 0%, rgba(201, 233, 54, 0.08), transparent 34rem),
-    linear-gradient(145deg, #070807 0%, #11120d 46%, #060706 100%);
+    radial-gradient(circle at 18% 0%, rgba(180, 145, 90, 0.07), transparent 34rem),
+    linear-gradient(145deg, #080706 0%, #0f0d0a 46%, #060504 100%);
   color: #fff;
 }
 
@@ -154,11 +154,29 @@ body {
 .hero-title span {
   display: block;
   margin-top: 12px;
-  color: rgba(255, 255, 255, 0.48);
-  font-family: var(--font-instrument-serif), var(--font-omotenashi), serif;
+  color: rgba(255, 255, 255, 0.44);
+  font-family: var(--font-omotenashi), var(--font-instrument-serif), serif;
   font-size: 44px;
   font-style: italic;
   line-height: 1.05;
+}
+
+.hero-concept {
+  display: grid;
+  gap: 8px;
+  margin-top: 28px;
+  color: rgba(255, 255, 255, 0.62);
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.hero-concept span {
+  color: rgba(255, 255, 255, 0.65);
+  font-family: var(--font-yuji-mai), serif;
+  font-size: 13px;
+  letter-spacing: 0.08em;
 }
 
 .hero-meta {
@@ -196,6 +214,106 @@ body {
   line-height: 1.7;
 }
 
+.git-ticker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-top: 1px solid var(--hub-line);
+  border-bottom: 1px solid var(--hub-line);
+  padding: 11px 0;
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+/* エッジのフェード（mix-blend-modeと干渉しないよう別要素で） */
+.git-ticker::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    var(--hub-bg) 0%,
+    transparent 8%,
+    transparent 92%,
+    var(--hub-bg) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.git-ticker-label {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 3;
+  padding-left: 4px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.git-ticker-track {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* クリーム色のハイライトゾーン */
+.git-ticker-track::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  left: 28%;
+  width: 22%;
+  background: var(--hub-accent);
+  z-index: 0;
+}
+
+.git-ticker-inner {
+  position: relative;
+  display: flex;
+  width: max-content;
+  z-index: 1;
+  mix-blend-mode: difference;
+  animation: tickerScroll 40s linear infinite;
+}
+
+.git-ticker-inner:hover {
+  animation-play-state: paused;
+}
+
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.git-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 48px;
+  white-space: nowrap;
+}
+
+.git-ticker-repo {
+  color: var(--hub-accent);
+  font-size: 10px;
+}
+
+.git-ticker-msg {
+  color: var(--hub-accent);
+  font-size: 11px;
+  opacity: 0.9;
+}
+
+.git-ticker-dot {
+  color: var(--hub-accent);
+  font-size: 14px;
+  opacity: 0.4;
+}
+
 .tool-section {
   padding-bottom: 120px;
 }
@@ -215,21 +333,22 @@ body {
 
 .category-button {
   min-height: 38px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.025);
-  color: rgba(255, 255, 255, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.46);
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11px;
   padding: 0 16px;
   text-transform: uppercase;
+  letter-spacing: 0.06em;
   transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
 }
 
 .category-button:hover,
 .category-button.is-active {
-  border-color: rgba(201, 233, 54, 0.64);
-  background: rgba(201, 233, 54, 0.08);
+  border-color: rgba(226, 208, 176, 0.52);
+  background: rgba(226, 208, 176, 0.06);
   color: rgba(255, 255, 255, 0.9);
 }
 
@@ -263,8 +382,8 @@ body {
 
 .tool-row:hover,
 .tool-row.is-selected {
-  background: rgba(255, 255, 255, 0.035);
-  border-color: rgba(201, 233, 54, 0.44);
+  background: rgba(226, 208, 176, 0.04);
+  border-color: rgba(226, 208, 176, 0.32);
   padding-left: 14px;
 }
 
@@ -280,9 +399,9 @@ body {
 }
 
 .tool-row-name {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.88);
   font-family: var(--font-instrument-serif), serif;
-  font-size: 34px;
+  font-size: 32px;
   font-style: italic;
   line-height: 1;
 }
@@ -308,7 +427,7 @@ body {
 }
 
 .tool-status.live {
-  border-color: rgba(201, 233, 54, 0.54);
+  border-color: rgba(226, 208, 176, 0.42);
   color: var(--hub-accent);
 }
 
@@ -318,13 +437,12 @@ body {
   display: grid;
   gap: 18px;
   min-height: 420px;
-  border: 1px solid rgba(201, 233, 54, 0.28);
-  border-radius: 4px;
-  background:
-    linear-gradient(145deg, rgba(201, 233, 54, 0.09), transparent 44%),
-    rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(226, 208, 176, 0.14);
+  border-top: 2px solid rgba(226, 208, 176, 0.44);
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.025);
   padding: 28px;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18);
 }
 
 .preview-icon {
@@ -360,10 +478,10 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  border: 1px solid rgba(201, 233, 54, 0.62);
-  border-radius: 2px;
-  background: rgba(201, 233, 54, 0.12);
-  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(226, 208, 176, 0.44);
+  border-radius: 0;
+  background: rgba(226, 208, 176, 0.06);
+  color: rgba(255, 255, 255, 0.88);
   font-size: 12px;
   text-decoration: none;
   text-transform: uppercase;
@@ -372,7 +490,7 @@ body {
 
 .preview-action:hover {
   background: var(--hub-accent);
-  color: #10120b;
+  color: #0e0c09;
 }
 
 .preview-action.disabled {

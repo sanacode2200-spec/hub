@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { categories, tools, type Tool } from "@/lib/tools-registry";
+import { GitActivity } from "./GitActivity";
 
 function useIntersectionObserver(ref: React.RefObject<Element | null>) {
   const [isVisible, setIsVisible] = useState(false);
@@ -113,7 +114,7 @@ export default function HubClient() {
       <div
         className="cursor-light"
         style={{
-          background: `radial-gradient(520px circle at ${mousePos.x}px ${mousePos.y}px, rgba(201,233,54,0.12), transparent 68%)`,
+          background: `radial-gradient(520px circle at ${mousePos.x}px ${mousePos.y}px, rgba(180,145,90,0.09), transparent 68%)`,
         }}
       />
       <div className="grain-layer" />
@@ -122,7 +123,7 @@ export default function HubClient() {
       <div className="hub-frame">
         <nav className="hub-nav" aria-label="Primary">
           <a href="/" className="hub-wordmark">
-            toolbox
+            sanacode
           </a>
           <span className="hub-nav-note">Free / No signup / Browser only</span>
         </nav>
@@ -131,9 +132,13 @@ export default function HubClient() {
           <div className="hero-copy">
             <p className="hero-kicker">Small utilities for impatient work</p>
             <h1 id="home-title" className="hero-title">
-              TOOLBOX
-              <span>nothing extra</span>
+              SANACODE
+              <span>toolbox</span>
             </h1>
+            <p className="hero-concept">
+              Medical background. Zero-friction code.
+              <span>医療のバックグラウンドから、摩擦ゼロのコードを。</span>
+            </p>
           </div>
 
           <div className="hero-meta" aria-label="Tool summary">
@@ -151,6 +156,8 @@ export default function HubClient() {
             </p>
           </div>
         </section>
+
+        <GitActivity />
 
         <section className="tool-section" aria-label="Tools">
           <div className="category-bar" role="list" aria-label="Filter tools">
@@ -210,7 +217,7 @@ export default function HubClient() {
         </section>
 
         <footer className="hub-footer">
-          <span>toolbox</span>
+          <span>sanacode</span>
           <span>No tracking. No ads. No signup.</span>
         </footer>
       </div>

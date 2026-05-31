@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, DM_Mono } from "next/font/google";
+import { Instrument_Serif, DM_Mono, Noto_Serif_JP, Yuji_Mai } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -8,6 +8,20 @@ const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   style: ["normal", "italic"],
   weight: "400",
+});
+
+const notoSerifJP = Noto_Serif_JP({
+  variable: "--font-noto-serif-jp",
+  subsets: ["latin"],
+  weight: ["400"],
+  preload: false,
+});
+
+const yujiMai = Yuji_Mai({
+  variable: "--font-yuji-mai",
+  subsets: ["latin"],
+  weight: "400",
+  preload: false,
 });
 
 const dmMono = DM_Mono({
@@ -42,7 +56,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${instrumentSerif.variable} ${dmMono.variable} ${apoc.variable} ${omotenashi.variable} antialiased`}
+        className={`${instrumentSerif.variable} ${dmMono.variable} ${apoc.variable} ${omotenashi.variable} ${notoSerifJP.variable} ${yujiMai.variable} antialiased`}
       >
         {children}
       </body>
