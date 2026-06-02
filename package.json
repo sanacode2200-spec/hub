@@ -9,6 +9,7 @@
     "dev": "turbo run dev",
     "dev:hub": "turbo run dev --filter=hub",
     "dev:mov-to-mp4": "turbo run dev --filter=mov-to-mp4",
+    "dev:portfolio": "turbo run dev --filter=sanacode-portfolio",
     "build": "turbo run build",
     "lint": "turbo run lint"
   },
