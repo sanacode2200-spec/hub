@@ -16,11 +16,29 @@
 
 | 項目 | 内容 |
 |------|------|
-| フレームワーク | Next.js 15 + TypeScript + React 19 |
-| スタイリング | Tailwind CSS（インラインスタイル併用） |
+| ランディング (`apps/landing`) | Astro 6（`output: "static"`）+ vanilla JS（フレームワークなし、最小JS） |
+| QR Generator (`apps/qr-generator`) | Astro 6 + Svelte 5（`@astrojs/svelte`） |
+| hub / 各ツール (`apps/hub`, `apps/mov-to-mp4`) | Next.js 15 + TypeScript + React 19 |
+| スタイリング | Tailwind CSS（hub系）/ プレーンCSS（Astro系、`.glass-card`デザイン） |
 | モノレポ | Turborepo (`npm@11.12.1`) |
-| フォント | Instrument Serif（italic）+ DM Mono |
+| フォント | Instrument Serif（italic）+ DM Mono + Apoc Revelations（ワードマーク） |
+| QR生成 | `qrcode` + `jsqr`（カメラスキャン確認） |
 | 変換エンジン | `@ffmpeg/ffmpeg@0.12` + `@ffmpeg/core@0.12.6` |
+
+---
+
+## アプリ一覧（ポート）
+
+| アプリ | 役割 | dev port | 起動コマンド |
+|--------|------|----------|--------------|
+| `apps/landing` | **トップページ**（ガラスカード、Astro） | 4321 | `npm run dev:landing` |
+| `apps/qr-generator` | QR Generator（ガラスカード + qrpic背景、Astro+Svelte） | 4322 | `npm run dev:qr-generator` |
+| `apps/hub` | 旧トップページ（Next.js）。現在は `/tools/mov-to-mp4` などツールページの置き場として残存 | 3000 | `npm run dev:hub` |
+| `apps/mov-to-mp4` | MOV→MP4 スタンドアロン版 | 3001 | `npm run dev:mov-to-mp4` |
+
+各アプリ間のリンクは `import.meta.env.PUBLIC_*` 環境変数で制御（未設定時はlocalhostにフォールバック）：
+- `apps/landing`: `PUBLIC_TOOLS_URL`（既定 `http://localhost:3000`、mov-to-mp4等の参照先）, `PUBLIC_QR_URL`（既定 `http://localhost:4322`）
+- `apps/qr-generator`: `PUBLIC_HUB_URL`（既定 `http://localhost:4321`、Nav/Footer/CTAの戻り先）
 
 ---
 
@@ -29,23 +47,36 @@
 ```
 hub/
 ├── apps/
-│   ├── hub/                          # ハブサイト（port 3000）
+│   ├── landing/                      # トップページ（Astro, port 4321）★現行
+│   │   ├── src/
+│   │   │   ├── pages/index.astro     # Nav → Hero → GitTicker → ToolsSection → Footer
+│   │   │   ├── components/           # Nav/Hero/GitTicker/ToolsSection/Footer (.astro)
+│   │   │   ├── data/tools.ts         # ツール一覧の定義（ここを編集してツール追加）
+│   │   │   └── styles/global.css     # .glass-card / .hero-title など
+│   │   └── public/{images,fonts}/
+│   ├── qr-generator/                 # QR Generator（Astro+Svelte, port 4322）★現行
+│   │   ├── src/
+│   │   │   ├── pages/index.astro     # Nav → QrTool → HowItWorks → Features → CTA → Footer
+│   │   │   ├── components/
+│   │   │   │   └── QrTool.svelte     # QR生成・カスタマイズ・DL・カメラスキャン (client:load)
+│   │   │   └── styles/global.css     # apps/landing由来 + QR専用クラス、背景はqrpic.png
+│   │   └── public/{images,fonts}/
+│   ├── hub/                          # 旧トップページ（Next.js, port 3000）
 │   │   ├── app/
-│   │   │   ├── page.tsx              # → <HubClient />
-│   │   │   ├── layout.tsx            # フォント読み込み・メタデータ
+│   │   │   ├── page.tsx              # → <HubClient />（現在は未使用扱い）
 │   │   │   ├── globals.css
 │   │   │   └── tools/
 │   │   │       └── mov-to-mp4/
 │   │   │           └── page.tsx      # → <MovToMp4Converter />（SEO metadata付き）
 │   │   ├── components/
-│   │   │   ├── HubClient.tsx         # ハブUI本体（"use client"）
+│   │   │   ├── HubClient.tsx
 │   │   │   └── tools/
-│   │   │       └── MovToMp4Converter.tsx  # hub内埋め込み版コンバーター
+│   │   │       └── MovToMp4Converter.tsx
 │   │   └── lib/
-│   │       └── tools-registry.ts     # ツール一覧の定義（ここを編集してツール追加）
+│   │       └── tools-registry.ts     # hub内部用（qr-generatorは削除済み）
 │   └── mov-to-mp4/                   # スタンドアロン版（port 3001）
 │       ├── app/
-│       │   └── page.tsx              # → <ConverterPage hubUrl="..." />
+│       │   └── page.tsx              # → <ConverterPage hubUrl="http://localhost:4321" />
 │       └── components/
 │           └── ConverterPage.tsx     # hubUrl propsでリンク先を制御
 ├── packages/
@@ -62,50 +93,50 @@ hub/
 ## 開発コマンド
 
 ```bash
-npm run dev              # 全アプリ起動
-npm run dev:hub          # hub のみ（port 3000）
-npm run dev:mov-to-mp4   # スタンドアロン版のみ（port 3001）
-npm run build            # 全ビルド
+npm run dev               # 全アプリ起動
+npm run dev:landing       # トップページ（port 4321）★
+npm run dev:qr-generator  # QR Generator（port 4322）★
+npm run dev:hub           # 旧hub / mov-to-mp4ツールページ（port 3000）
+npm run dev:mov-to-mp4    # スタンドアロン版（port 3001）
+npm run build             # 全ビルド
 ```
 
 ---
 
-## ツール一覧（tools-registry.ts）
+## ツール一覧（apps/landing/src/data/tools.ts が正）
 
-| slug | 名前 | カテゴリ | ステータス |
-|------|------|----------|-----------|
-| `mov-to-mp4` | MOV → MP4 | video | **live** |
-| `qr-generator` | QR Generator | generate | soon |
-| `heic-to-jpg` | HEIC → JPG | image | soon |
-| `image-compress` | Image Compress | image | soon |
-| `ogp-generator` | OGP Generator | generate | soon |
-| `json-formatter` | JSON Formatter | dev | soon |
+| slug | 名前 | カテゴリ | ステータス | 実体 |
+|------|------|----------|-----------|------|
+| `mov-to-mp4` | MOV → MP4 | video | **live** | `apps/hub` `/tools/mov-to-mp4`（Next.js） |
+| `qr-generator` | QR Generator | generate | **live** | `apps/qr-generator`（Astro+Svelte, port 4322） |
+| `heic-to-jpg` | HEIC → JPG | image | soon | 未実装 |
+| `image-compress` | Image Compress | image | soon | 未実装 |
+| `ogp-generator` | OGP Generator | generate | soon | 未実装 |
+| `json-formatter` | JSON Formatter | dev | soon | 未実装 |
 
-**新ツール追加の手順：**
-1. `tools-registry.ts` にエントリを追加
-2. `apps/hub/app/tools/<slug>/page.tsx` を作成
-3. `apps/hub/components/tools/<ComponentName>.tsx` に実装
+**新ツール追加の手順（推奨：独立Astroアプリ方式）：**
+1. `apps/<slug>/` に `apps/qr-generator` を参考にAstroアプリを新規作成（インタラクティブ部分が多ければSvelteコンポーネント）
+2. `apps/landing/src/data/tools.ts` にエントリを追加（`url` は `PUBLIC_<SLUG>_URL ?? "http://localhost:<port>"`）
+3. `apps/landing/src/styles/global.css` の `.glass-card` 系クラスを流用してデザインを揃える
+4. ルート `package.json` に `dev:<slug>` スクリプトを追加、`astro.config.mjs` で `server.port` を指定
 
 ---
 
-## ハブサイト（apps/hub）
+## トップページ（apps/landing）
 
 ### デザイン仕様
 
-- 背景：`#080808`（ほぼ黒）
-- カーソル追従のアンビエントグロー（radial-gradient 600px）
-- grain texture overlay（SVG feTurbulence、opacity 0.35、128px repeat）
-- カードホバー：アイコン浮く + "Open tool →" スライドイン
-- スクロールでカードがスタッガーフェードイン（IntersectionObserver）
-- カテゴリフィルタータブ（All / Video / Image / Generate / Dev）
-- `_design/toolhub.jsx` が元デザイン参照ファイル
+- 背景：`apps/landing/public/images/background.png` を `.hub-shell::before` に重ね、暗めのグラデーションオーバーレイ
+- `.glass-card`：`backdrop-filter: blur(18px) saturate(140%)` + 半透明グラデ背景 + `border: 1px solid rgba(255,255,255,0.13)`
+- `.hero-title`（"TOOLBOX"）：`color: transparent` + `-webkit-text-stroke` の透明アウトライン文字
+- カーソル追従のアンビエントグロー（`.cursor-light`）+ grain texture overlay（`.grain-layer`）+ `.ambient-*` ぼかし玉
+- gitログティッカー（`GitTicker.astro`、GitHub APIから取得、vanilla JS）
+- カテゴリフィルター（`.category-button`、ピル型）+ ツール一覧 + プレビューパネル（`ToolsSection.astro`、vanilla JS + IntersectionObserver）
 
-### カードコンポーネント
+### 実装方針
 
-`ToolCard` in `HubClient.tsx`：
-- `status: "live"` → `<Link>` でラップ
-- `status: "soon"` → クリック不可、"Soon" バッジ表示
-- アニメーション delay：`index * 0.07s`
+- React/フレームワーク不使用。すべて `.astro` + `<script>`（vanilla JS）でJSバンドル最小化
+- `apps/hub` の `HubClient.tsx`（旧実装）からロジックを移植したもの。`apps/hub` 自体は変更不要
 
 ---
 
@@ -122,8 +153,8 @@ npm run build            # 全ビルド
 
 | ファイル | 用途 | ハブへのリンク |
 |---------|------|--------------|
-| `apps/hub/components/tools/MovToMp4Converter.tsx` | hub内 `/tools/mov-to-mp4` ルート | Next.js `<Link href="/">` |
-| `apps/mov-to-mp4/components/ConverterPage.tsx` | スタンドアロンアプリ（port 3001） | `hubUrl` prop で `<a href>` |
+| `apps/hub/components/tools/MovToMp4Converter.tsx` | hub内 `/tools/mov-to-mp4` ルート | Next.js `<Link href="/">`（注：リンク先は旧hub） |
+| `apps/mov-to-mp4/components/ConverterPage.tsx` | スタンドアロンアプリ（port 3001） | `hubUrl="http://localhost:4321"` prop で `<a href>`（apps/landingへ） |
 
 ### Status の型
 
@@ -133,50 +164,49 @@ type Status = "idle" | "loading-ffmpeg" | "converting" | "done" | "error"
 
 ---
 
+## QR Generator（apps/qr-generator）
+
+- 背景：`apps/qr-generator/public/images/qrpic.png`（パステル系イラスト）+ 濃いめのオーバーレイ
+- インタラクティブ部分は `QrTool.svelte`（`client:load`）に集約：
+  - Content type（URL/Text/Email/Phone）、Error correction（L/M/Q/H）、Dot style（square/round）
+  - カラーパレット5種 + Solid/Gradientカスタム、ロゴ埋め込み（`<image>` SVG埋め込み）
+  - SVG生成は `qrcode` の `QRCodeLib.create()` を使い手動でSVG文字列を組み立て（`buildSVG`）
+  - ダウンロード：SVGはBlob、PNGはCanvas経由（4倍スケール）
+  - カメラスキャン確認：`jsqr` を動的import、`getUserMedia`
+- スタイル：`.qr-layout`（2カラム）/ `.option-tab` / `.palette-card` / `.color-control` / `.qr-preview-box` / `.qr-action` / `.scan-panel` など（`apps/landing` の `.glass-card` 系をベースに拡張）
+
+---
+
 ## デザイン言語
 
-### hub
-- ダーク・ミニマル・grain texture
-- フォント：Instrument Serif italic（見出し）+ DM Mono（本文・ラベル）
+### apps/landing（トップページ）
+- ダーク・ミニマル・grain texture・背景写真 + ガラスカード
+- フォント：Instrument Serif italic（見出し）+ DM Mono（本文・ラベル）+ Apoc Revelations（ワードマーク）
 - カラー：白 `rgba(255,255,255,0.xx)` の透明度で階層表現
 
 ### 各ツールページ
-- hub とは独立したデザイン言語でOK
-- MOV→MP4：ダークパープル系グラデ背景、アクセント `#7c3aff` → `#3b82f6`
-- 構成：ヒーロー → ツール本体 → 使い方 → 特徴 → ハブへの導線（他ツールへの回遊CTA）
+- トップページとトンマナを揃える場合は `apps/landing/src/styles/global.css` の `.glass-card` 系を流用
+- MOV→MP4（`apps/mov-to-mp4`）：ダークパープル系グラデ背景、アクセント `#7c3aff` → `#3b82f6`（独自デザイン言語のまま）
+- 構成：（ヒーロー →）ツール本体 → 使い方 → 特徴 → トップページへの導線（"Explore more free tools →"）
 
 ### SEO戦略
 - 各ツールページが集客の主役（ユーザーはツールページに直接着地）
-- ハブサイトは回遊の場（使ってよかったらハブへ）
+- トップページは回遊の場（使ってよかったらトップへ）
 - ヒーローセクションで3秒以内に価値を伝える
-- 各ページ単体でキーワード上位を狙う（例：「MOV to MP4 converter free」）
-- ページ末尾に "Explore more free tools →" CTA でハブへ誘導
+- 各ページ単体でキーワード上位を狙う（例：「QR code generator free」「MOV to MP4 converter free」）
+- ページ末尾に "Explore more free tools →" CTA でトップページへ誘導
 
 ---
 
 ## 次に実装するツール
 
 優先度順：
-1. **QR Generator** — `qrcode.js`
-2. **HEIC → JPG** — `heic2any`、iPhoneの写真変換
-3. **Image Compress** — `browser-image-compression`
-4. **OGP Generator** — ライブラリ不要
-5. **JSON Formatter** — ライブラリ不要
+1. **HEIC → JPG** — `heic2any`、iPhoneの写真変換
+2. **Image Compress** — `browser-image-compression`
+3. **OGP Generator** — ライブラリ不要
+4. **JSON Formatter** — ライブラリ不要
 
-### QR Generator 実装仕様
-
-**差別化ポイント：**
-- 完全無料・スキャン上限なし・有効期限なし・広告なし・登録不要
-- 生成直後にスキャン確認機能（カメラで読み取りテスト）
-
-**機能：**
-- 入力タイプ：URL / テキスト / メール / 電話番号
-- エラー訂正レベル選択（L / M / Q / H）
-- リアルタイム生成
-- ドット形状変更（丸・四角）
-- 前景色・背景色カスタム
-- ロゴ・アイコン埋め込み
-- SVG / PNG ダウンロード（両方無料）
+新規ツールは `apps/qr-generator` と同じ構成（独立Astroアプリ + 必要に応じてSvelte、`apps/landing` のガラスカードCSSを流用）で作成する。
 
 ---
 

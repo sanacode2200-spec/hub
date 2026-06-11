@@ -24,6 +24,11 @@ export const categories: Category[] = [
   { id: "dev", label: "Dev" },
 ];
 
+// Tool pages currently live in the apps/hub Next.js app.
+const TOOLS_BASE = import.meta.env.PUBLIC_TOOLS_URL ?? "http://localhost:3000";
+// QR Generator is a standalone Astro + Svelte app.
+const QR_BASE = import.meta.env.PUBLIC_QR_URL ?? "http://localhost:4322";
+
 export const tools: Tool[] = [
   {
     slug: "mov-to-mp4",
@@ -32,7 +37,16 @@ export const tools: Tool[] = [
     category: "video",
     icon: "🎬",
     status: "live",
-    url: "/tools/mov-to-mp4",
+    url: `${TOOLS_BASE}/tools/mov-to-mp4`,
+  },
+  {
+    slug: "qr-generator",
+    name: "QR Generator",
+    description: "AI neon QR codes for social links and campaigns",
+    category: "generate",
+    icon: "◼",
+    status: "live",
+    url: QR_BASE,
   },
   {
     slug: "heic-to-jpg",
@@ -41,7 +55,7 @@ export const tools: Tool[] = [
     category: "image",
     icon: "⬡",
     status: "soon",
-    url: "/tools/heic-to-jpg",
+    url: `${TOOLS_BASE}/tools/heic-to-jpg`,
   },
   {
     slug: "image-compress",
@@ -50,7 +64,7 @@ export const tools: Tool[] = [
     category: "image",
     icon: "◈",
     status: "soon",
-    url: "/tools/image-compress",
+    url: `${TOOLS_BASE}/tools/image-compress`,
   },
   {
     slug: "ogp-generator",
@@ -59,7 +73,7 @@ export const tools: Tool[] = [
     category: "generate",
     icon: "▣",
     status: "soon",
-    url: "/tools/ogp-generator",
+    url: `${TOOLS_BASE}/tools/ogp-generator`,
   },
   {
     slug: "json-formatter",
@@ -68,6 +82,6 @@ export const tools: Tool[] = [
     category: "dev",
     icon: "⟨⟩",
     status: "soon",
-    url: "/tools/json-formatter",
+    url: `${TOOLS_BASE}/tools/json-formatter`,
   },
 ];

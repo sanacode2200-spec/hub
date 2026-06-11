@@ -118,22 +118,23 @@ export default function HubClient() {
         }}
       />
       <div className="grain-layer" />
-      <div className="hub-backdrop" />
+      <div className="ambient ambient-one" />
+      <div className="ambient ambient-two" />
 
       <div className="hub-frame">
-        <nav className="hub-nav" aria-label="Primary">
+        <nav className="hub-nav glass-card" aria-label="Primary">
           <a href="/" className="hub-wordmark">
-            sanacode
+            ToolBox
           </a>
           <span className="hub-nav-note">Free / No signup / Browser only</span>
         </nav>
 
-        <section className="hub-hero" aria-labelledby="home-title">
+        <section className="hub-hero glass-card" aria-labelledby="home-title">
           <div className="hero-copy">
             <p className="hero-kicker">Small utilities for impatient work</p>
             <h1 id="home-title" className="hero-title">
-              SANACODE
-              <span>toolbox</span>
+              TOOLBOX
+              <span>sanacode</span>
             </h1>
             <p className="hero-concept">
               Medical background. Zero-friction code.
@@ -157,7 +158,9 @@ export default function HubClient() {
           </div>
         </section>
 
-        <GitActivity />
+        <div className="glass-card">
+          <GitActivity />
+        </div>
 
         <section className="tool-section" aria-label="Tools">
           <div className="category-bar" role="list" aria-label="Filter tools">
@@ -181,7 +184,7 @@ export default function HubClient() {
             ))}
           </div>
 
-          <div className="tool-layout">
+          <div className="tool-layout glass-card">
             <div className="tool-list">
               {filtered.map((tool, index) => (
                 <ToolRow
@@ -216,8 +219,8 @@ export default function HubClient() {
           </div>
         </section>
 
-        <footer className="hub-footer">
-          <span>sanacode</span>
+        <footer className="hub-footer glass-card">
+          <span>ToolBox</span>
           <span>No tracking. No ads. No signup.</span>
         </footer>
       </div>

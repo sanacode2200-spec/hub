@@ -1,0 +1,20 @@
+{
+  "name": "qr-generator",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^6.4.6",
+    "@astrojs/svelte": "^8.1.2",
+    "svelte": "^5.43.6",
+    "qrcode": "^1.5.4",
+    "jsqr": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/qrcode": "^1.5.6"
+  }
+}

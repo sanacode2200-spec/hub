@@ -1,0 +1,33 @@
+---
+const steps = [
+  {
+    step: "01",
+    title: "Add your content",
+    desc: "Paste a URL, profile link, message, email, or phone number.",
+  },
+  {
+    step: "02",
+    title: "Style the code",
+    desc: "Pick error correction, dot shape, colors, and an optional logo.",
+  },
+  {
+    step: "03",
+    title: "Export & scan",
+    desc: "Download SVG or high-res PNG, then test it with your camera.",
+  },
+];
+---
+
+<section aria-label="How it works">
+  <div class="info-grid">
+    {
+      steps.map((item) => (
+        <div class="info-card">
+          <div class="step">{item.step}</div>
+          <div class="title">{item.title}</div>
+          <div class="desc">{item.desc}</div>
+        </div>
+      ))
+    }
+  </div>
+</section>

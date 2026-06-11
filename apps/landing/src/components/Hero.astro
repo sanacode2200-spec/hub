@@ -1,0 +1,35 @@
+---
+import { tools } from "../data/tools";
+
+const liveCount = tools.filter((tool) => tool.status === "live").length;
+const soonCount = tools.length - liveCount;
+---
+
+<section class="hub-hero glass-card" aria-labelledby="home-title">
+  <div class="hero-copy">
+    <p class="hero-kicker">Small utilities for impatient work</p>
+    <h1 id="home-title" class="hero-title">
+      TOOLBOX
+      <span>sanacode</span>
+    </h1>
+    <p class="hero-concept">
+      Medical background. Zero-friction code.
+      <span>医療のバックグラウンドから、摩擦ゼロのコードを。</span>
+    </p>
+  </div>
+
+  <div class="hero-meta" aria-label="Tool summary">
+    <div>
+      <span class="meta-number">{String(liveCount).padStart(2, "0")}</span>
+      <span class="meta-label">Live tools</span>
+    </div>
+    <div>
+      <span class="meta-number">{String(soonCount).padStart(2, "0")}</span>
+      <span class="meta-label">Coming next</span>
+    </div>
+    <p>
+      File conversion, generation, and developer helpers that stay in the
+      browser.
+    </p>
+  </div>
+</section>

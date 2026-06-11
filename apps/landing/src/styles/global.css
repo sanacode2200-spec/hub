@@ -1,20 +1,39 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+@font-face {
+  font-family: "Apoc Revelations";
+  src: url("/fonts/Apoc-Revelations.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Omotenashi Mincho";
+  src: url("/fonts/OmotenashiMincho.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --hub-bg: #080706;
-  --hub-panel: rgba(255, 255, 255, 0.04);
   --hub-line: rgba(255, 255, 255, 0.09);
   --hub-muted: rgba(255, 255, 255, 0.46);
-  --hub-soft: rgba(255, 255, 255, 0.70);
   --hub-accent: #e2d0b0;
+  --font-instrument-serif: "Instrument Serif";
+  --font-dm-mono: "DM Mono";
+  --font-yuji-mai: "Yuji Mai";
+  --font-apoc: "Apoc Revelations";
+  --font-omotenashi: "Omotenashi Mincho";
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
@@ -299,7 +318,6 @@ body {
   -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
 }
 
-/* クリーム色のハイライトゾーン */
 .git-ticker-track::before {
   content: '';
   position: absolute;
@@ -415,6 +433,9 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.09);
   color: inherit;
   text-decoration: none;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(24px);
   transition:
     opacity 520ms ease,
     transform 520ms ease,
@@ -423,11 +444,20 @@ body {
     padding 180ms ease;
 }
 
+.tool-row.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .tool-row:hover,
 .tool-row.is-selected {
   background: rgba(226, 208, 176, 0.04);
   border-color: rgba(226, 208, 176, 0.32);
   padding-left: 14px;
+}
+
+.tool-row.is-hidden {
+  display: none;
 }
 
 .tool-row-index {
