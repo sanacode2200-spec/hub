@@ -39,7 +39,7 @@
   // 直近8年（現在の年を含む、新しい順）
   const YEARS: number[] = Array.from({ length: 8 }, (_, i) => CURRENT_YEAR - i);
 
-  let username = $state("torvalds");
+  let username = $state("sanacode2200-spec");
   let year = $state<number>(CURRENT_YEAR);
   let view = $state<View>("Year");
   let month = $state<number>(0); // 0..11
