@@ -1,0 +1,16 @@
+---
+const features = [
+  "👤  Any public GitHub user",
+  "📅  Year & month views",
+  "🔥  Streaks & totals",
+  "🎨  Color themes",
+  "🔓  No login or token",
+  "💻  Runs in your browser",
+];
+---
+
+<section aria-label="Features">
+  <div class="feature-grid">
+    {features.map((feature) => <div class="feature-item">{feature}</div>)}
+  </div>
+</section>

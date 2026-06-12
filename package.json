@@ -7,10 +7,11 @@
   ],
   "scripts": {
     "dev": "turbo run dev",
-    "dev:hub": "turbo run dev --filter=hub",
     "dev:landing": "turbo run dev --filter=landing",
     "dev:qr-generator": "turbo run dev --filter=qr-generator",
     "dev:mov-to-mp4": "turbo run dev --filter=mov-to-mp4",
+    "dev:ogp-generator": "turbo run dev --filter=ogp-generator",
+    "dev:github-contributions": "turbo run dev --filter=github-contributions",
     "dev:portfolio": "turbo run dev --filter=sanacode-portfolio",
     "build": "turbo run build",
     "lint": "turbo run lint"

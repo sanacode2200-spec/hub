@@ -1,0 +1,42 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import OgpTool from "../components/OgpTool.svelte";
+import HowItWorks from "../components/HowItWorks.astro";
+import Features from "../components/Features.astro";
+import CTA from "../components/CTA.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<BaseLayout
+  title="Free OG Image Generator — ToolBox"
+  description="Create Open Graph and Twitter social share images at the exact 1200x630 size. Free, no signup, runs entirely in your browser. Style the canvas with templates, fonts, and gradients, then export PNG or @2x."
+>
+  <main class="hub-shell" id="hub-shell">
+    <div class="cursor-light" id="cursor-light"></div>
+    <div class="grain-layer"></div>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <div class="hub-frame">
+      <Nav />
+      <OgpTool client:load />
+      <HowItWorks />
+      <Features />
+      <CTA />
+      <Footer />
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  const shell = document.getElementById("hub-shell");
+  const cursorLight = document.getElementById("cursor-light");
+
+  window.setTimeout(() => shell?.classList.add("is-loaded"), 120);
+
+  window.addEventListener("mousemove", (event) => {
+    if (!cursorLight) return;
+    cursorLight.style.background = `radial-gradient(520px circle at ${event.clientX}px ${event.clientY}px, rgba(180,145,90,0.09), transparent 68%)`;
+  });
+</script>

@@ -1,0 +1,50 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import ConverterTool from "../components/ConverterTool.svelte";
+import HowItWorks from "../components/HowItWorks.astro";
+import Features from "../components/Features.astro";
+import CTA from "../components/CTA.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<BaseLayout
+  title="Free MOV to MP4 Converter — ToolBox"
+  description="Convert iPhone MOV videos to MP4 in your browser. Free, no signup, no ads, no upload, and no file size limit."
+>
+  <main class="hub-shell" id="hub-shell">
+    <div class="cursor-light" id="cursor-light"></div>
+    <div class="grain-layer"></div>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <div class="hub-frame">
+      <Nav />
+
+      <div class="mov-hero">
+        <h1 class="mov-hero-title">MOV to <em>MP4</em>, instantly</h1>
+        <p class="mov-hero-desc">
+          Convert iPhone MOV videos to MP4 right in your browser. No uploads, no signup, no file size limit.
+        </p>
+      </div>
+
+      <ConverterTool client:load />
+      <HowItWorks />
+      <Features />
+      <CTA />
+      <Footer />
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  const shell = document.getElementById("hub-shell");
+  const cursorLight = document.getElementById("cursor-light");
+
+  window.setTimeout(() => shell?.classList.add("is-loaded"), 120);
+
+  window.addEventListener("mousemove", (event) => {
+    if (!cursorLight) return;
+    cursorLight.style.background = `radial-gradient(520px circle at ${event.clientX}px ${event.clientY}px, rgba(180,145,90,0.09), transparent 68%)`;
+  });
+</script>

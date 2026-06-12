@@ -1,5 +1,5 @@
 {
-  "name": "mov-to-mp4",
+  "name": "github-contributions",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,8 +10,6 @@
   "dependencies": {
     "astro": "^6.4.6",
     "@astrojs/svelte": "^8.1.2",
-    "svelte": "^5.43.6",
-    "@ffmpeg/ffmpeg": "^0.12.10",
-    "@ffmpeg/util": "^0.12.1"
+    "svelte": "^5.43.6"
   }
 }

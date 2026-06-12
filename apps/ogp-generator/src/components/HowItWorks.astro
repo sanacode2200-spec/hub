@@ -1,0 +1,33 @@
+---
+const steps = [
+  {
+    step: "01",
+    title: "Write your copy",
+    desc: "Add an eyebrow, a headline, and a short description for your share card.",
+  },
+  {
+    step: "02",
+    title: "Style the canvas",
+    desc: "Pick a template, switch fonts, and set solid or gradient colors.",
+  },
+  {
+    step: "03",
+    title: "Export 1200x630 PNG",
+    desc: "Download the exact Open Graph size, or render at 2x for crisp output.",
+  },
+];
+---
+
+<section aria-label="How it works">
+  <div class="info-grid">
+    {
+      steps.map((item) => (
+        <div class="info-card">
+          <div class="step">{item.step}</div>
+          <div class="title">{item.title}</div>
+          <div class="desc">{item.desc}</div>
+        </div>
+      ))
+    }
+  </div>
+</section>

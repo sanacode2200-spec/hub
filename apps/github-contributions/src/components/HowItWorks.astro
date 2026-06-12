@@ -1,0 +1,33 @@
+---
+const steps = [
+  {
+    step: "01",
+    title: "Enter a username",
+    desc: "Type any public GitHub handle, then hit Load or press Enter.",
+  },
+  {
+    step: "02",
+    title: "Pick a year or month",
+    desc: "Switch between the full-year heatmap and a single-month calendar.",
+  },
+  {
+    step: "03",
+    title: "Read the heatmap & stats",
+    desc: "See totals, busiest day, longest streak, and active days at a glance.",
+  },
+];
+---
+
+<section aria-label="How it works">
+  <div class="info-grid">
+    {
+      steps.map((item) => (
+        <div class="info-card">
+          <div class="step">{item.step}</div>
+          <div class="title">{item.title}</div>
+          <div class="desc">{item.desc}</div>
+        </div>
+      ))
+    }
+  </div>
+</section>

@@ -24,10 +24,14 @@ export const categories: Category[] = [
   { id: "dev", label: "Dev" },
 ];
 
-// Tool pages currently live in the apps/hub Next.js app.
-const TOOLS_BASE = import.meta.env.PUBLIC_TOOLS_URL ?? "http://localhost:3000";
 // QR Generator is a standalone Astro + Svelte app.
 const QR_BASE = import.meta.env.PUBLIC_QR_URL ?? "http://localhost:4322";
+// MOV to MP4 is a standalone Astro + Svelte app.
+const MOV_BASE = import.meta.env.PUBLIC_MOV_URL ?? "http://localhost:3001";
+// OG Image Generator is a standalone Astro + Svelte app.
+const OGP_BASE = import.meta.env.PUBLIC_OGP_URL ?? "http://localhost:4323";
+// GitHub Contributions is a standalone Astro + Svelte app.
+const GH_BASE = import.meta.env.PUBLIC_GH_URL ?? "http://localhost:4324";
 
 export const tools: Tool[] = [
   {
@@ -37,7 +41,7 @@ export const tools: Tool[] = [
     category: "video",
     icon: "🎬",
     status: "live",
-    url: `${TOOLS_BASE}/tools/mov-to-mp4`,
+    url: MOV_BASE,
   },
   {
     slug: "qr-generator",
@@ -55,7 +59,7 @@ export const tools: Tool[] = [
     category: "image",
     icon: "⬡",
     status: "soon",
-    url: `${TOOLS_BASE}/tools/heic-to-jpg`,
+    url: "",
   },
   {
     slug: "image-compress",
@@ -64,16 +68,16 @@ export const tools: Tool[] = [
     category: "image",
     icon: "◈",
     status: "soon",
-    url: `${TOOLS_BASE}/tools/image-compress`,
+    url: "",
   },
   {
     slug: "ogp-generator",
     name: "OGP Generator",
-    description: "Preview and generate OGP share images",
+    description: "Create 1200×630 Open Graph share images",
     category: "generate",
     icon: "▣",
-    status: "soon",
-    url: `${TOOLS_BASE}/tools/ogp-generator`,
+    status: "live",
+    url: OGP_BASE,
   },
   {
     slug: "json-formatter",
@@ -82,6 +86,15 @@ export const tools: Tool[] = [
     category: "dev",
     icon: "⟨⟩",
     status: "soon",
-    url: `${TOOLS_BASE}/tools/json-formatter`,
+    url: "",
+  },
+  {
+    slug: "github-contributions",
+    name: "GitHub Contributions",
+    description: "Visualize any GitHub user's contributions by month and year",
+    category: "dev",
+    icon: "▦",
+    status: "live",
+    url: GH_BASE,
   },
 ];

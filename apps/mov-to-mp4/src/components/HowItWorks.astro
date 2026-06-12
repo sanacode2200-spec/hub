@@ -1,0 +1,33 @@
+---
+const steps = [
+  {
+    step: "01",
+    title: "Drop your file",
+    desc: "Drag in a MOV file from your iPhone, or click to browse and select one.",
+  },
+  {
+    step: "02",
+    title: "Converted locally",
+    desc: "FFmpeg runs in your browser to remux the video — nothing is uploaded.",
+  },
+  {
+    step: "03",
+    title: "Download MP4",
+    desc: "Save the result as a Windows- and Android-friendly MP4 file.",
+  },
+];
+---
+
+<section aria-label="How it works">
+  <div class="info-grid">
+    {
+      steps.map((item) => (
+        <div class="info-card">
+          <div class="step">{item.step}</div>
+          <div class="title">{item.title}</div>
+          <div class="desc">{item.desc}</div>
+        </div>
+      ))
+    }
+  </div>
+</section>
