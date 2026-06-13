@@ -80,24 +80,31 @@
   }
 
   const EC_HINTS: Record<ECLevel, string> = {
-    L: "7% recovery — smallest QR",
-    M: "15% recovery — recommended",
-    Q: "25% recovery — good for logos",
-    H: "30% recovery — maximum",
+    L: "復元率7% - 最小サイズ",
+    M: "復元率15% - おすすめ",
+    Q: "復元率25% - ロゴ向き",
+    H: "復元率30% - 最大",
+  };
+
+  const INPUT_TYPE_LABELS: Record<InputType, string> = {
+    url: "URL",
+    text: "テキスト",
+    email: "メール",
+    phone: "電話",
   };
 
   const PLACEHOLDERS: Record<InputType, string> = {
     url: "https://instagram.com/yourbrand",
-    text: "Enter any text...",
+    text: "テキストを入力...",
     email: "you@example.com",
-    phone: "+1 234 567 8900",
+    phone: "090-1234-5678",
   };
 
   const DEFAULT_INPUTS: Record<InputType, string> = {
     url: "https://instagram.com/yourbrand",
     text: "Hello from ToolBox",
     email: "you@example.com",
-    phone: "+1 234 567 8900",
+    phone: "090-1234-5678",
   };
 
   const PALETTES: Palette[] = [
@@ -244,7 +251,7 @@
 <div class="qr-layout glass-card">
   <div class="qr-panel">
     <div>
-      <span class="qr-section-label">Content type</span>
+      <span class="qr-section-label">コンテンツの種類</span>
       <div class="option-tabs">
         {#each ["url", "text", "email", "phone"] as t (t)}
           <button
@@ -253,7 +260,7 @@
             class:is-active={inputType === t}
             onclick={() => selectInputType(t as InputType)}
           >
-            {t.charAt(0).toUpperCase() + t.slice(1)}
+            {INPUT_TYPE_LABELS[t as InputType]}
           </button>
         {/each}
       </div>
@@ -269,7 +276,7 @@
     <div class="qr-divider"></div>
 
     <div>
-      <span class="qr-section-label">Error correction</span>
+      <span class="qr-section-label">誤り訂正レベル</span>
       <div class="option-tabs">
         {#each ["L", "M", "Q", "H"] as lv (lv)}
           <button
@@ -286,7 +293,7 @@
     </div>
 
     <div>
-      <span class="qr-section-label">Dot style</span>
+      <span class="qr-section-label">ドットのスタイル</span>
       <div class="option-tabs">
         <button type="button" class="option-tab" class:is-active={dotStyle === "square"} onclick={() => (dotStyle = "square")}>
           ■ Square
@@ -298,7 +305,7 @@
     </div>
 
     <div>
-      <span class="qr-section-label">Colors</span>
+      <span class="qr-section-label">カラー</span>
       <div class="palette-grid">
         {#each PALETTES as palette (palette.name)}
           <button type="button" class="palette-card" class:is-active={activePalette === palette.name} onclick={() => applyPalette(palette)}>
@@ -357,30 +364,30 @@
     </div>
 
     <div>
-      <span class="qr-section-label">Logo (optional)</span>
+      <span class="qr-section-label">ロゴ（任意）</span>
       <div class="logo-row">
         <button type="button" class="logo-button" onclick={() => logoInput?.click()}>
-          {logo ? "Change logo" : "Upload image"}
+          {logo ? "ロゴを変更" : "画像をアップロード"}
         </button>
         {#if logo}
-          <button type="button" class="logo-button remove" onclick={removeLogo}>Remove</button>
+          <button type="button" class="logo-button remove" onclick={removeLogo}>削除</button>
         {/if}
       </div>
       <input bind:this={logoInput} type="file" accept="image/*" onchange={handleLogoUpload} style="display:none" />
       {#if logo && ecLevel === "L"}
-        <p class="option-hint">Tip: use Q or H error correction when adding a logo</p>
+        <p class="option-hint">ヒント: ロゴを追加する場合は誤り訂正レベルをQまたはHにしてください</p>
       {/if}
     </div>
   </div>
 
-  <aside class="tool-preview" aria-label="QR preview">
+  <aside class="tool-preview" aria-label="QRコードのプレビュー">
     <div class="qr-preview-box" class:is-empty={!svgString} style={svgString ? `background:${bgColor}` : ""}>
       {#if svgString}
         {@html svgString}
       {:else}
         <div class="qr-preview-empty">
           <div class="glyph">◼</div>
-          <div class="label">Enter content to generate</div>
+          <div class="label">内容を入力すると生成されます</div>
         </div>
       {/if}
     </div>
@@ -392,7 +399,7 @@
       </div>
 
       {#if scanStatus === "idle"}
-        <button type="button" class="qr-action secondary" onclick={startScan}>📷 Test with camera</button>
+        <button type="button" class="qr-action secondary" onclick={startScan}>📷 カメラでテスト</button>
       {/if}
 
       {#if scanStatus === "scanning"}
@@ -400,25 +407,25 @@
           <video bind:this={videoEl} muted playsinline></video>
           <canvas bind:this={scanCanvas} style="display:none"></canvas>
           <div class="scan-panel-bar">
-            <span>Point camera at the QR code</span>
-            <button type="button" class="scan-stop" onclick={stopScan}>Stop</button>
+            <span>QRコードにカメラを向けてください</span>
+            <button type="button" class="scan-stop" onclick={stopScan}>停止</button>
           </div>
         </div>
       {/if}
 
       {#if scanStatus === "success" && scannedValue}
         <div class="scan-result">
-          <div class="scan-result-title">✓ Scanned successfully</div>
+          <div class="scan-result-title">✓ スキャン成功</div>
           <div class="scan-result-value">{scannedValue}</div>
           <button type="button" class="scan-result-retry" onclick={() => { scanStatus = "idle"; scannedValue = null; }}>
-            Test again →
+            もう一度試す →
           </button>
         </div>
       {/if}
 
       {#if scanStatus === "error"}
         <div class="scan-error">
-          <span>Camera not available. Try on a mobile device.</span>
+          <span>カメラが利用できません。モバイル端末でお試しください。</span>
           <button type="button" onclick={() => (scanStatus = "idle")}>✕</button>
         </div>
       {/if}

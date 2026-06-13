@@ -78,11 +78,11 @@
   const OG_H = 630;
 
   let activePreset = $state<string | null>("Minimal");
-  let title = $state("Ship faster with free browser tools");
+  let title = $state("無料のブラウザツールで、もっと速く");
   let subtitle = $state(
-    "No signup, no uploads, no limits. Everything runs locally in your browser."
+    "登録不要・アップロード不要・上限なし。すべてブラウザ内で完結します。"
   );
-  let eyebrow = $state("ToolBox / Open Graph");
+  let eyebrow = $state("ToolBox / OGP");
   let bgMode = $state<BgMode>("solid");
   let bgColor = $state("#0f1115");
   let gradient = $state<[string, string]>(["#0f1115", "#1b1f27"]);
@@ -359,7 +359,7 @@
 <div class="qr-layout glass-card">
   <div class="qr-panel">
     <div>
-      <span class="qr-section-label">Template</span>
+      <span class="qr-section-label">テンプレート</span>
       <div class="palette-grid">
         {#each PRESETS as preset (preset.name)}
           <button
@@ -383,39 +383,39 @@
     <div class="qr-divider"></div>
 
     <div>
-      <span class="qr-section-label">Eyebrow / badge</span>
+      <span class="qr-section-label">ラベル（アイキャッチ）</span>
       <input
         type="text"
         class="qr-field"
         bind:value={eyebrow}
-        placeholder="Brand or category"
+        placeholder="ブランド名やカテゴリ"
       />
     </div>
 
     <div>
-      <span class="qr-section-label">Title</span>
+      <span class="qr-section-label">タイトル</span>
       <textarea
         class="qr-field ogp-textarea"
         rows="2"
         bind:value={title}
-        placeholder="Your big headline"
+        placeholder="メインの見出し"
       ></textarea>
     </div>
 
     <div>
-      <span class="qr-section-label">Subtitle / description</span>
+      <span class="qr-section-label">サブタイトル・説明文</span>
       <textarea
         class="qr-field ogp-textarea"
         rows="2"
         bind:value={subtitle}
-        placeholder="A short supporting line"
+        placeholder="補足の説明文"
       ></textarea>
     </div>
 
     <div class="qr-divider"></div>
 
     <div>
-      <span class="qr-section-label">Background</span>
+      <span class="qr-section-label">背景</span>
       <div class="option-tabs">
         <button
           type="button"
@@ -465,7 +465,7 @@
     </div>
 
     <div>
-      <span class="qr-section-label">Text & accent</span>
+      <span class="qr-section-label">テキスト・アクセント</span>
       <div class="color-controls">
         <div class="color-control">
           <div class="color-control-label">Text</div>
@@ -487,7 +487,7 @@
     </div>
 
     <div>
-      <span class="qr-section-label">Font</span>
+      <span class="qr-section-label">フォント</span>
       <div class="option-tabs">
         <button
           type="button"
@@ -511,7 +511,7 @@
     </div>
 
     <div>
-      <span class="qr-section-label">Alignment</span>
+      <span class="qr-section-label">配置</span>
       <div class="option-tabs">
         <button
           type="button"
@@ -529,7 +529,7 @@
     </div>
   </div>
 
-  <aside class="tool-preview" aria-label="OG image preview">
+  <aside class="tool-preview" aria-label="OG画像のプレビュー">
     <div class="ogp-canvas-frame">
       <canvas
         bind:this={canvasEl}
@@ -539,7 +539,7 @@
       ></canvas>
     </div>
 
-    <div class="ogp-size-tag">1200 × 630 — Open Graph size</div>
+    <div class="ogp-size-tag">1200 × 630 — OGP標準サイズ</div>
 
     <div class="qr-download-row">
       <button type="button" class="qr-action" onclick={downloadPNG}>↓ PNG</button>

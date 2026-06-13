@@ -34,7 +34,7 @@
 
   async function convert(file: File) {
     if (!file.name.match(/\.(mov)$/i) && file.type !== "video/quicktime") {
-      errorMsg = "Please choose a MOV file.";
+      errorMsg = "MOVファイルを選択してください。";
       return;
     }
     errorMsg = null;
@@ -68,7 +68,7 @@
       status = "done";
     } catch (err) {
       console.error(err);
-      errorMsg = "We could not convert this file. Try another MOV video.";
+      errorMsg = "このファイルは変換できませんでした。別のMOVファイルでお試しください。";
       status = "error";
     }
   }
@@ -96,7 +96,7 @@
   }
 </script>
 
-<div class="glass-card mov-tool" aria-label="MOV to MP4 converter">
+<div class="glass-card mov-tool" aria-label="MOV to MP4 コンバーター">
   {#if status === "idle" || status === "error"}
     <div
       class="mov-dropzone"
@@ -117,8 +117,8 @@
         style="display:none"
       />
       <div class="mov-dropzone-icon">↑</div>
-      <div class="mov-dropzone-title">Drop your MOV file here</div>
-      <div class="mov-dropzone-hint">or click to browse — converted locally in your browser</div>
+      <div class="mov-dropzone-title">MOVファイルをここにドロップ</div>
+      <div class="mov-dropzone-hint">またはクリックして選択 — ブラウザ内で変換されます</div>
     </div>
 
     {#if errorMsg}
@@ -128,7 +128,7 @@
 
   {#if status === "loading-ffmpeg"}
     <div class="mov-state">
-      <div class="mov-state-label">Loading FFmpeg…</div>
+      <div class="mov-state-label">FFmpegを読み込み中…</div>
       <div class="mov-progress-track">
         <div class="mov-progress-bar is-indeterminate"></div>
       </div>
@@ -137,7 +137,7 @@
 
   {#if status === "converting"}
     <div class="mov-state">
-      <div class="mov-state-label">Converting…</div>
+      <div class="mov-state-label">変換中…</div>
       <div class="mov-progress-value">{progress}%</div>
       <div class="mov-progress-track">
         <div class="mov-progress-bar" style={`width:${progress}%`}></div>
@@ -148,13 +148,13 @@
   {#if status === "done" && outputUrl}
     <div class="mov-state">
       <div class="mov-result-icon">✓</div>
-      <div class="mov-result-title">Your MP4 is ready</div>
+      <div class="mov-result-title">MP4の準備ができました</div>
       {#if stats}
         <div class="mov-result-meta">{stats.size} · {stats.time}</div>
       {/if}
       <div class="mov-action-row">
-        <a class="mov-action" href={outputUrl} download={outputName}>↓ Download MP4</a>
-        <button type="button" class="mov-action secondary" onclick={reset}>Convert another file</button>
+        <a class="mov-action" href={outputUrl} download={outputName}>↓ MP4をダウンロード</a>
+        <button type="button" class="mov-action secondary" onclick={reset}>別のファイルを変換</button>
       </div>
     </div>
   {/if}

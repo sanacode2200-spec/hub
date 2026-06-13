@@ -17,11 +17,11 @@ export interface Category {
 }
 
 export const categories: Category[] = [
-  { id: "all", label: "All" },
-  { id: "video", label: "Video" },
-  { id: "image", label: "Image" },
-  { id: "generate", label: "Generate" },
-  { id: "dev", label: "Dev" },
+  { id: "all", label: "すべて" },
+  { id: "video", label: "動画" },
+  { id: "image", label: "画像" },
+  { id: "generate", label: "生成" },
+  { id: "dev", label: "開発" },
 ];
 
 // QR Generator is a standalone Astro + Svelte app.
@@ -37,7 +37,7 @@ export const tools: Tool[] = [
   {
     slug: "mov-to-mp4",
     name: "MOV → MP4",
-    description: "Convert iPhone MOV videos to MP4 instantly",
+    description: "iPhoneのMOV動画を一瞬でMP4に変換",
     category: "video",
     icon: "🎬",
     status: "live",
@@ -45,8 +45,8 @@ export const tools: Tool[] = [
   },
   {
     slug: "qr-generator",
-    name: "QR Generator",
-    description: "AI neon QR codes for social links and campaigns",
+    name: "QRコード生成",
+    description: "AI Neonなどのカラーパレットで作るQRコードジェネレーター",
     category: "generate",
     icon: "◼",
     status: "live",
@@ -54,8 +54,8 @@ export const tools: Tool[] = [
   },
   {
     slug: "heic-to-jpg",
-    name: "HEIC → JPG",
-    description: "Convert iPhone photos to a universal format",
+    name: "HEIC → JPG変換",
+    description: "iPhoneの写真を汎用フォーマットに変換",
     category: "image",
     icon: "⬡",
     status: "soon",
@@ -63,8 +63,8 @@ export const tools: Tool[] = [
   },
   {
     slug: "image-compress",
-    name: "Image Compress",
-    description: "Reduce file size without losing quality",
+    name: "画像圧縮",
+    description: "画質を落とさずファイルサイズを削減",
     category: "image",
     icon: "◈",
     status: "soon",
@@ -72,8 +72,8 @@ export const tools: Tool[] = [
   },
   {
     slug: "ogp-generator",
-    name: "OGP Generator",
-    description: "Create 1200×630 Open Graph share images",
+    name: "OGP画像生成",
+    description: "1200×630のOGPシェア画像を作成",
     category: "generate",
     icon: "▣",
     status: "live",
@@ -81,8 +81,8 @@ export const tools: Tool[] = [
   },
   {
     slug: "json-formatter",
-    name: "JSON Formatter",
-    description: "Format and validate JSON instantly",
+    name: "JSON整形",
+    description: "JSONを整形・検証",
     category: "dev",
     icon: "⟨⟩",
     status: "soon",
@@ -90,8 +90,8 @@ export const tools: Tool[] = [
   },
   {
     slug: "github-contributions",
-    name: "GitHub Contributions",
-    description: "Visualize any GitHub user's contributions by month and year",
+    name: "GitHub Contributions（草）",
+    description: "GitHubユーザーのContributionsを月・年単位で可視化",
     category: "dev",
     icon: "▦",
     status: "live",

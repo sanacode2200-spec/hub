@@ -9,9 +9,25 @@ import Footer from "../components/Footer.astro";
 ---
 
 <BaseLayout
-  title="Free MOV to MP4 Converter — ToolBox"
-  description="Convert iPhone MOV videos to MP4 in your browser. Free, no signup, no ads, no upload, and no file size limit."
+  title="MOV→MP4変換 無料 - iPhone動画をブラウザで変換 | Toolbox"
+  description="iPhoneで撮影したMOV動画をブラウザ上でMP4に変換。無料・登録不要・アップロード不要・ファイルサイズの上限なし。"
 >
+  <script
+    type="application/ld+json"
+    slot="head"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      name: "MOV→MP4コンバーター",
+      url: Astro.site?.href,
+      description:
+        "iPhoneのMOV動画をブラウザでMP4に変換。無料・登録不要・アップロード不要・サイズ上限なし。",
+      applicationCategory: "MultimediaApplication",
+      operatingSystem: "Any (runs in browser)",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "JPY" },
+      inLanguage: "ja",
+    })}
+  />
   <main class="hub-shell" id="hub-shell">
     <div class="cursor-light" id="cursor-light"></div>
     <div class="grain-layer"></div>
@@ -22,9 +38,9 @@ import Footer from "../components/Footer.astro";
       <Nav />
 
       <div class="mov-hero">
-        <h1 class="mov-hero-title">MOV to <em>MP4</em>, instantly</h1>
+        <h1 class="mov-hero-title">MOVを<em>MP4</em>に、その場で変換</h1>
         <p class="mov-hero-desc">
-          Convert iPhone MOV videos to MP4 right in your browser. No uploads, no signup, no file size limit.
+          iPhoneのMOV動画をブラウザだけでMP4に変換。アップロードも登録も不要、ファイルサイズの上限もありません。
         </p>
       </div>
 

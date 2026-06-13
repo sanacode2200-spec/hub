@@ -20,6 +20,7 @@
   --font-instrument-serif: "Instrument Serif";
   --font-dm-mono: "DM Mono";
   --font-apoc: "Apoc Revelations";
+  --font-noto-sans-jp: "Noto Sans JP";
 }
 
 html {
@@ -29,7 +30,7 @@ html {
 body {
   background: var(--hub-bg);
   color: white;
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
 }
 
 ::-webkit-scrollbar { width: 4px; }
@@ -48,7 +49,7 @@ body {
   z-index: -3;
   inset: 0;
   background:
-    linear-gradient(135deg, rgba(8, 7, 6, 0.58), rgba(10, 8, 14, 0.78)),
+    linear-gradient(135deg, rgba(8, 7, 6, 0.48), rgba(10, 8, 14, 0.68)),
     url("/images/qrpic.png") center / cover no-repeat;
   content: "";
   transform: scale(1.015);
@@ -58,7 +59,7 @@ body {
   position: fixed;
   z-index: -2;
   inset: 0;
-  background: radial-gradient(circle at 50% 42%, transparent 15%, rgba(5, 4, 8, 0.32) 65%, rgba(4, 3, 6, 0.72) 100%);
+  background: radial-gradient(circle at 50% 42%, transparent 15%, rgba(5, 4, 8, 0.24) 65%, rgba(4, 3, 6, 0.6) 100%);
   content: "";
   pointer-events: none;
 }
@@ -166,7 +167,7 @@ body {
 
 .hub-nav-note,
 .hub-footer {
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
   letter-spacing: 0;
 }
 
@@ -180,6 +181,37 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+/* Hero */
+
+.qr-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: clamp(36px, 5vw, 56px) clamp(24px, 4vw, 40px) 8px;
+  text-align: center;
+}
+
+.qr-hero-title {
+  color: rgba(255, 255, 255, 0.94);
+  font-family: var(--font-noto-sans-jp), sans-serif;
+  font-size: clamp(36px, 6vw, 60px);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.qr-hero-title em {
+  color: var(--hub-accent);
+  font-style: normal;
+}
+
+.qr-hero-desc {
+  max-width: 540px;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.46);
+  font-size: 13px;
+  line-height: 1.7;
 }
 
 /* QR tool layout */
@@ -225,7 +257,7 @@ body {
   padding: 0 16px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
   transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
 }
 
@@ -250,7 +282,7 @@ body {
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(12px) saturate(140%);
   color: rgba(255, 255, 255, 0.88);
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
   font-size: 13px;
   padding: 12px 16px;
   outline: none;
@@ -280,7 +312,7 @@ body {
   cursor: pointer;
   padding: 8px;
   text-align: left;
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
   font-size: 10px;
   color: rgba(255, 255, 255, 0.5);
   transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
@@ -348,7 +380,7 @@ body {
 .color-control-value {
   color: rgba(255, 255, 255, 0.5);
   font-size: 11px;
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
 }
 
 .color-control-input input[type="color"] {
@@ -368,7 +400,7 @@ body {
   cursor: pointer;
   font-size: 11px;
   letter-spacing: 0.04em;
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
   padding: 8px 16px;
 }
 
@@ -453,7 +485,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.04em;
   cursor: pointer;
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
   transition: background 180ms ease, color 180ms ease;
 }
 
@@ -508,7 +540,7 @@ body {
   color: rgba(255, 130, 130, 0.7);
   cursor: pointer;
   font-size: 11px;
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
   padding: 4px 10px;
 }
 
@@ -541,7 +573,7 @@ body {
   cursor: pointer;
   font-size: 10px;
   letter-spacing: 0.06em;
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
   padding: 0;
 }
 
@@ -571,6 +603,15 @@ body {
 
 /* How it works / Features */
 
+.section-heading {
+  margin: 0 0 16px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -595,9 +636,9 @@ body {
 .info-card .title {
   margin-bottom: 8px;
   color: rgba(255, 255, 255, 0.78);
-  font-family: var(--font-instrument-serif), serif;
+  font-family: var(--font-noto-sans-jp), sans-serif;
   font-size: 22px;
-  font-style: italic;
+  font-weight: 700;
 }
 
 .info-card .desc {

@@ -2,8 +2,8 @@
 import { categories, tools } from "../data/tools";
 ---
 
-<section class="tool-section" aria-label="Tools">
-  <div class="category-bar" id="category-bar" role="list" aria-label="Filter tools">
+<section class="tool-section" aria-label="ツール一覧">
+  <div class="category-bar" id="category-bar" role="list" aria-label="ツールの絞り込み">
     {
       categories.map((category) => (
         <button
@@ -56,7 +56,7 @@ import { categories, tools } from "../data/tools";
       }
     </div>
 
-    <aside class="tool-preview" id="tool-preview" aria-label="Tool preview"></aside>
+    <aside class="tool-preview" id="tool-preview" aria-label="ツールのプレビュー"></aside>
   </div>
 </section>
 
@@ -75,8 +75,8 @@ import { categories, tools } from "../data/tools";
       <p>${tool.description}</p>
       ${
         tool.status === "live"
-          ? `<a href="${tool.url}" class="preview-action">Open tool</a>`
-          : `<span class="preview-action disabled">Coming soon</span>`
+          ? `<a href="${tool.url}" class="preview-action">開く</a>`
+          : `<span class="preview-action disabled">近日公開</span>`
       }
     `;
   }

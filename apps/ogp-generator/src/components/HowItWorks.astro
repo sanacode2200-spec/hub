@@ -2,29 +2,30 @@
 const steps = [
   {
     step: "01",
-    title: "Write your copy",
-    desc: "Add an eyebrow, a headline, and a short description for your share card.",
+    title: "テキストを入力",
+    desc: "ラベル・見出し・短い説明文を入力します。",
   },
   {
     step: "02",
-    title: "Style the canvas",
-    desc: "Pick a template, switch fonts, and set solid or gradient colors.",
+    title: "デザインを調整",
+    desc: "テンプレートを選び、フォントや背景の色・グラデーションを設定します。",
   },
   {
     step: "03",
-    title: "Export 1200x630 PNG",
-    desc: "Download the exact Open Graph size, or render at 2x for crisp output.",
+    title: "1200x630のPNGを書き出し",
+    desc: "OGP標準サイズでダウンロード、または高解像度の@2xで書き出せます。",
   },
 ];
 ---
 
 <section aria-label="How it works">
+  <h2 class="section-heading">使い方</h2>
   <div class="info-grid">
     {
       steps.map((item) => (
         <div class="info-card">
           <div class="step">{item.step}</div>
-          <div class="title">{item.title}</div>
+          <h3 class="title">{item.title}</h3>
           <div class="desc">{item.desc}</div>
         </div>
       ))

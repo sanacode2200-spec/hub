@@ -9,9 +9,25 @@ import Footer from "../components/Footer.astro";
 ---
 
 <BaseLayout
-  title="Free OG Image Generator — ToolBox"
-  description="Create Open Graph and Twitter social share images at the exact 1200x630 size. Free, no signup, runs entirely in your browser. Style the canvas with templates, fonts, and gradients, then export PNG or @2x."
+  title="OGP画像作成 無料 - 1200×630のSNSシェア画像 | Toolbox"
+  description="OGP・Twitterカードのシェア画像を1200×630のジャストサイズで作成。無料・登録不要。テンプレートやフォント、グラデーションでデザインしてPNG/@2xで書き出せます。"
 >
+  <script
+    type="application/ld+json"
+    slot="head"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      name: "OGP画像ジェネレーター",
+      url: Astro.site?.href,
+      description:
+        "OGP・Twitterシェア画像を1200×630のジャストサイズで作成。無料・登録不要、ブラウザだけで完結。",
+      applicationCategory: "DesignApplication",
+      operatingSystem: "Any (runs in browser)",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "JPY" },
+      inLanguage: "ja",
+    })}
+  />
   <main class="hub-shell" id="hub-shell">
     <div class="cursor-light" id="cursor-light"></div>
     <div class="grain-layer"></div>
@@ -20,6 +36,14 @@ import Footer from "../components/Footer.astro";
 
     <div class="hub-frame">
       <Nav />
+
+      <div class="ogp-hero">
+        <h1 class="ogp-hero-title">無料のOGP画像<em>ジェネレーター</em></h1>
+        <p class="ogp-hero-desc">
+          OGP・Twitterのシェア画像を1200×630のジャストサイズで作成。登録不要、すべてブラウザ内で完結します。
+        </p>
+      </div>
+
       <OgpTool client:load />
       <HowItWorks />
       <Features />

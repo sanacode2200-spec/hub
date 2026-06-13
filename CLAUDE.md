@@ -7,8 +7,8 @@
 - 全ツール完全無料・登録不要・ブラウザ完結・データ保存なし
 - 広告なし・サーバー処理なし・スキャン上限なし・有効期限なし
 - デプロイ：Vercel / ドメイン：Cloudflare
-- **ターゲット：英語圏ユーザー（US / UK / AU / CA）**
-- **UI言語：全テキスト英語**（コメント・変数名は日本語でOK）
+- **ターゲット：国内（日本）ユーザー**
+- **UI言語：全テキスト日本語**（ブランド名・技術/フォーマット用語・デザイン用語のラベルは英語のまま）
 
 ---
 
@@ -20,7 +20,7 @@
 | 各ツール (`apps/qr-generator`, `apps/mov-to-mp4`, `apps/ogp-generator`, `apps/github-contributions`) | Astro 6 + Svelte 5（`@astrojs/svelte`）、すべて独立スタンドアロンアプリ |
 | スタイリング | プレーンCSS（全アプリ共通の `.glass-card` デザイン、`apps/qr-generator/src/styles/global.css` がベース） |
 | モノレポ | Turborepo (`npm@11.12.1`) |
-| フォント | Instrument Serif（italic）+ DM Mono + Apoc Revelations（ワードマーク） |
+| フォント | Instrument Serif（italic）+ DM Mono + Apoc Revelations（ワードマーク） + Noto Sans JP（日本語見出し・本文） |
 | QR生成 | `qrcode` + `jsqr`（カメラスキャン確認） |
 | 変換エンジン | `@ffmpeg/ffmpeg@0.12` + `@ffmpeg/core@0.12.6` |
 
@@ -33,8 +33,8 @@
 | `apps/landing` | **トップページ**（ガラスカード、Astro） | 4321 | `npm run dev:landing` |
 | `apps/qr-generator` | QR Generator（ガラスカード + qrpic背景、Astro+Svelte） | 4322 | `npm run dev:qr-generator` |
 | `apps/mov-to-mp4` | MOV→MP4（ガラスカード + ancient-city背景、Astro+Svelte） | 3001 | `npm run dev:mov-to-mp4` |
-| `apps/ogp-generator` | OGP Generator（ガラスカード + pic4背景、Astro+Svelte） | 4323 | `npm run dev:ogp-generator` |
-| `apps/github-contributions` | GitHub Contributions Visualizer（ガラスカード + pic5背景、Astro+Svelte） | 4324 | `npm run dev:github-contributions` |
+| `apps/ogp-generator` | OGP Generator（ガラスカード + pic5背景、Astro+Svelte） | 4323 | `npm run dev:ogp-generator` |
+| `apps/github-contributions` | GitHub Contributions Visualizer（ガラスカード + pic6背景、Astro+Svelte） | 4324 | `npm run dev:github-contributions` |
 
 各アプリ間のリンクは `import.meta.env.PUBLIC_*` 環境変数で制御（未設定時はlocalhostにフォールバック）：
 - `apps/landing`: `PUBLIC_QR_URL`（既定 `http://localhost:4322`）, `PUBLIC_MOV_URL`（既定 `http://localhost:3001`）, `PUBLIC_OGP_URL`（既定 `http://localhost:4323`）, `PUBLIC_GH_URL`（既定 `http://localhost:4324`）
@@ -66,14 +66,14 @@ hub/
 │   │   │   ├── pages/index.astro     # Nav → OgpTool → HowItWorks → Features → CTA → Footer
 │   │   │   ├── components/
 │   │   │   │   └── OgpTool.svelte    # 1200x630 canvas編集・PNG/@2x DL (client:load)
-│   │   │   └── styles/global.css     # qr-generator由来 + OGP専用クラス、背景はogpic.png(pic4)
+│   │   │   └── styles/global.css     # qr-generator由来 + OGP専用クラス、背景はogpic.png(pic5)
 │   │   └── public/{images,fonts}/
 │   ├── github-contributions/         # GitHub Contributions Visualizer（Astro+Svelte, port 4324）★現行
 │   │   ├── src/
 │   │   │   ├── pages/index.astro     # Nav → ContributionsTool → HowItWorks → Features → CTA → Footer
 │   │   │   ├── components/
 │   │   │   │   └── ContributionsTool.svelte  # 年/月ヒートマップ・統計 (client:load)
-│   │   │   └── styles/global.css     # qr-generator由来 + gh-*専用クラス、背景はghpic.png(pic5)
+│   │   │   └── styles/global.css     # qr-generator由来 + gh-*専用クラス、背景はghpic.png(pic6)
 │   │   └── public/{images,fonts}/
 │   └── mov-to-mp4/                   # MOV→MP4（Astro+Svelte, port 3001）★現行
 │       ├── src/
@@ -178,7 +178,7 @@ type Status = "idle" | "loading-ffmpeg" | "converting" | "done" | "error"
 
 ## OGP Generator（apps/ogp-generator）
 
-- 背景：`apps/ogp-generator/public/images/ogpic.png`（pic4、パステルグラデ）+ 濃いめのオーバーレイ
+- 背景：`apps/ogp-generator/public/images/ogpic.png`（pic5、クリーム地に女の子と犬のイラスト）+ 濃いめのオーバーレイ
 - インタラクティブ部分は `OgpTool.svelte`（`client:load`）に集約：
   - テンプレートプリセット4種（Minimal / Gradient / Editorial / Terminal）
   - タイトル・サブタイトル・Eyebrow（バッジ）の入力欄
@@ -193,7 +193,7 @@ type Status = "idle" | "loading-ffmpeg" | "converting" | "done" | "error"
 
 ## GitHub Contributions Visualizer（apps/github-contributions）
 
-- 背景：`apps/github-contributions/public/images/ghpic.png`（pic5、クリーム地イラスト）+ 濃いめのオーバーレイ
+- 背景：`apps/github-contributions/public/images/ghpic.png`（pic6、ピンク家具とゴリラの写真）+ 濃いめのオーバーレイ
 - ツール一覧の **07番**（`apps/landing/src/data/tools.ts` で7番目のエントリ）
 - データ取得：`https://github-contributions-api.jogruber.de/v4/<username>?y=<year>`（CORS対応・トークン不要・ブラウザから直接fetch）
   - レスポンス：`{ total: { "<year>": number }, contributions: [{ date, count, level(0-4) }] }`
@@ -214,17 +214,20 @@ type Status = "idle" | "loading-ffmpeg" | "converting" | "done" | "error"
 - ダーク・ミニマル・grain texture・背景写真 + ガラスカード
 - フォント：Instrument Serif italic（見出し）+ DM Mono（本文・ラベル）+ Apoc Revelations（ワードマーク）
 - カラー：白 `rgba(255,255,255,0.xx)` の透明度で階層表現
+- 日本語テキストは `--font-noto-sans-jp`（Noto Sans JP）で表示。Instrument Serif / DM Mono / Apoc Revelationsは「TOOLBOX」「sanacode」などの英語ブランド要素にのみ使用
 
 ### 各ツールページ
 - 全ツールアプリ（`apps/qr-generator` / `apps/mov-to-mp4` / `apps/ogp-generator` / `apps/github-contributions`）は `apps/qr-generator/src/styles/global.css` を起点にコピーし、`.hub-shell::before` の背景画像のみ差し替えてトンマナを統一（アクセント `#e2d0b0` 共通）
-- 構成：（ヒーロー →）ツール本体 → 使い方 → 特徴 → トップページへの導線（"Explore more free tools →"）
+- 構成：（ヒーロー →）ツール本体 → 使い方 → 特徴 → トップページへの導線（"無料ツール一覧を見る →"）
+- 日本語の見出し・本文はNoto Sans JP（700）を使用。デザイン用語のラベル（Solid/Gradient、Serif/Mono/Sans、Left/Center、Less/More、パレット名・テンプレート名・テーマ名、Square/Round、Foreground/Background/Start/End/Text/Accent、曜日・月の英語略称など）は英語のまま
 
 ### SEO戦略
 - 各ツールページが集客の主役（ユーザーはツールページに直接着地）
 - トップページは回遊の場（使ってよかったらトップへ）
 - ヒーローセクションで3秒以内に価値を伝える
-- 各ページ単体でキーワード上位を狙う（例：「QR code generator free」「MOV to MP4 converter free」）
-- ページ末尾に "Explore more free tools →" CTA でトップページへ誘導
+- 各ページ単体で国内向けキーワード上位を狙う（例：「QRコード 作成 無料」「MOV MP4 変換」「OGP画像 作成」「GitHub Contributions 草 グラフ」）
+- ページ末尾に "無料ツール一覧を見る →" CTA でトップページへ誘導
+- `<html lang="ja">` / `og:locale: ja_JP` / JSON-LDの `inLanguage: "ja"` ・ `offers.priceCurrency: "JPY"` を全アプリで設定
 
 ---
 

@@ -30,6 +30,7 @@
   --font-yuji-mai: "Yuji Mai";
   --font-apoc: "Apoc Revelations";
   --font-omotenashi: "Omotenashi Mincho";
+  --font-noto-sans-jp: "Noto Sans JP";
 }
 
 html {
@@ -39,7 +40,7 @@ html {
 body {
   background: var(--hub-bg);
   color: white;
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
 }
 
 ::-webkit-scrollbar { width: 4px; }
@@ -58,7 +59,7 @@ body {
   z-index: -3;
   inset: 0;
   background:
-    linear-gradient(135deg, rgba(8, 7, 6, 0.4), rgba(10, 8, 14, 0.62)),
+    linear-gradient(135deg, rgba(8, 7, 6, 0.3), rgba(10, 8, 14, 0.52)),
     url("/images/background.png") center / cover no-repeat;
   content: "";
   transform: scale(1.015);
@@ -68,7 +69,7 @@ body {
   position: fixed;
   z-index: -2;
   inset: 0;
-  background: radial-gradient(circle at 50% 42%, transparent 15%, rgba(5, 4, 8, 0.18) 65%, rgba(4, 3, 6, 0.6) 100%);
+  background: radial-gradient(circle at 50% 42%, transparent 15%, rgba(5, 4, 8, 0.1) 65%, rgba(4, 3, 6, 0.48) 100%);
   content: "";
   pointer-events: none;
 }
@@ -183,7 +184,7 @@ body {
 .tool-row-desc,
 .preview-action,
 .hub-footer {
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
   letter-spacing: 0;
 }
 
@@ -242,7 +243,7 @@ body {
   gap: 8px;
   margin-top: 28px;
   color: rgba(255, 255, 255, 0.62);
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
   font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1;
@@ -285,7 +286,7 @@ body {
 
 .hero-meta p {
   color: rgba(255, 255, 255, 0.58);
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
   font-size: 12px;
   line-height: 1.7;
 }
@@ -473,9 +474,9 @@ body {
 
 .tool-row-name {
   color: rgba(255, 255, 255, 0.88);
-  font-family: var(--font-instrument-serif), serif;
+  font-family: var(--font-noto-sans-jp), sans-serif;
   font-size: 32px;
-  font-style: italic;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -531,17 +532,16 @@ body {
 .tool-preview h2 {
   margin-top: auto;
   color: rgba(255, 255, 255, 0.92);
-  font-family: var(--font-instrument-serif), serif;
+  font-family: var(--font-noto-sans-jp), sans-serif;
   font-size: 48px;
-  font-style: italic;
-  font-weight: 400;
+  font-weight: 700;
   line-height: 1;
   letter-spacing: 0;
 }
 
 .tool-preview p {
   color: rgba(255, 255, 255, 0.52);
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
   font-size: 12px;
   line-height: 1.7;
 }

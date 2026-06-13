@@ -2,29 +2,30 @@
 const steps = [
   {
     step: "01",
-    title: "Enter a username",
-    desc: "Type any public GitHub handle, then hit Load or press Enter.",
+    title: "ユーザー名を入力",
+    desc: "公開されているGitHubのユーザー名を入力し、Loadボタンを押すかEnterキーを押します。",
   },
   {
     step: "02",
-    title: "Pick a year or month",
-    desc: "Switch between the full-year heatmap and a single-month calendar.",
+    title: "年・月を選択",
+    desc: "年間ヒートマップと月別カレンダー表示を切り替えられます。",
   },
   {
     step: "03",
-    title: "Read the heatmap & stats",
-    desc: "See totals, busiest day, longest streak, and active days at a glance.",
+    title: "ヒートマップと統計を確認",
+    desc: "合計数・最も活発な日・最長連続日数・活動日数が一目でわかります。",
   },
 ];
 ---
 
 <section aria-label="How it works">
+  <h2 class="section-heading">使い方</h2>
   <div class="info-grid">
     {
       steps.map((item) => (
         <div class="info-card">
           <div class="step">{item.step}</div>
-          <div class="title">{item.title}</div>
+          <h3 class="title">{item.title}</h3>
           <div class="desc">{item.desc}</div>
         </div>
       ))

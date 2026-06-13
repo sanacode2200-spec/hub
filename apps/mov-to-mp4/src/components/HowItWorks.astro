@@ -2,29 +2,30 @@
 const steps = [
   {
     step: "01",
-    title: "Drop your file",
-    desc: "Drag in a MOV file from your iPhone, or click to browse and select one.",
+    title: "ファイルをドロップ",
+    desc: "iPhoneのMOVファイルをドラッグ、またはクリックして選択します。",
   },
   {
     step: "02",
-    title: "Converted locally",
-    desc: "FFmpeg runs in your browser to remux the video — nothing is uploaded.",
+    title: "ブラウザ内で変換",
+    desc: "FFmpegがブラウザ上で動作し、動画をリマックスします。アップロードは一切ありません。",
   },
   {
     step: "03",
-    title: "Download MP4",
-    desc: "Save the result as a Windows- and Android-friendly MP4 file.",
+    title: "MP4をダウンロード",
+    desc: "WindowsやAndroidでも再生しやすいMP4形式で保存できます。",
   },
 ];
 ---
 
 <section aria-label="How it works">
+  <h2 class="section-heading">使い方</h2>
   <div class="info-grid">
     {
       steps.map((item) => (
         <div class="info-card">
           <div class="step">{item.step}</div>
-          <div class="title">{item.title}</div>
+          <h3 class="title">{item.title}</h3>
           <div class="desc">{item.desc}</div>
         </div>
       ))

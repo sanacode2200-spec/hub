@@ -9,9 +9,25 @@ import Footer from "../components/Footer.astro";
 ---
 
 <BaseLayout
-  title="Free QR Code Generator — ToolBox"
-  description="Generate custom QR codes for links, profiles, and contact info. Free, no signup, no scan limits. Customize colors, dot style, and logo, then export SVG or PNG."
+  title="QRコード作成 無料 - ロゴ・カラーもカスタマイズ | Toolbox"
+  description="URLや連絡先、Wi-Fi情報などから無料でQRコードを作成。登録不要・スキャン回数の上限なし。色やドットの形、ロゴを自由にカスタマイズしてSVGまたはPNGで書き出せます。"
 >
+  <script
+    type="application/ld+json"
+    slot="head"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      name: "QRコードジェネレーター",
+      url: Astro.site?.href,
+      description:
+        "URLや連絡先などのQRコードを無料で作成。登録不要・スキャン回数の上限なし。",
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: "Any (runs in browser)",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "JPY" },
+      inLanguage: "ja",
+    })}
+  />
   <main class="hub-shell" id="hub-shell">
     <div class="cursor-light" id="cursor-light"></div>
     <div class="grain-layer"></div>
@@ -20,6 +36,14 @@ import Footer from "../components/Footer.astro";
 
     <div class="hub-frame">
       <Nav />
+
+      <div class="qr-hero">
+        <h1 class="qr-hero-title">無料のQRコード<em>ジェネレーター</em></h1>
+        <p class="qr-hero-desc">
+          URL・連絡先・Wi-Fiなど、用途に合わせたQRコードを作成。登録不要・スキャン回数の上限なし。SVGまたはPNGで書き出せます。
+        </p>
+      </div>
+
       <QrTool client:load />
       <HowItWorks />
       <Features />

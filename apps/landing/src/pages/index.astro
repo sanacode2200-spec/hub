@@ -5,12 +5,41 @@ import Hero from "../components/Hero.astro";
 import GitTicker from "../components/GitTicker.astro";
 import ToolsSection from "../components/ToolsSection.astro";
 import Footer from "../components/Footer.astro";
+import { tools } from "../data/tools";
+
+const liveTools = tools.filter((tool) => tool.status === "live");
 ---
 
 <BaseLayout
-  title="Toolbox — Simple free tools, nothing else"
-  description="A collection of free browser tools. No signup, no ads, no data stored. MOV to MP4, QR generator, and more."
+  title="無料のブラウザツール集 | Toolbox — 登録不要・データ保存なし"
+  description="登録不要・広告なし・データ保存なしで使える無料ツール集。QRコード生成、MOV→MP4変換、OGP画像作成、GitHub Contributions（草）の可視化など、すべてブラウザだけで完結します。"
 >
+  <script
+    type="application/ld+json"
+    slot="head"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          name: "Toolbox",
+          url: Astro.site?.href,
+          description: "登録不要・広告なし・データ保存なしの無料ブラウザツール集。",
+          inLanguage: "ja",
+        },
+        {
+          "@type": "ItemList",
+          itemListElement: liveTools.map((tool, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: tool.name,
+            description: tool.description,
+            url: tool.url,
+          })),
+        },
+      ],
+    })}
+  />
   <main class="hub-shell" id="hub-shell">
     <div class="cursor-light" id="cursor-light"></div>
     <div class="grain-layer"></div>

@@ -35,6 +35,11 @@
   ];
   const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+  const VIEW_LABELS: Record<View, string> = {
+    Year: "年",
+    Month: "月",
+  };
+
   const CURRENT_YEAR = new Date().getFullYear();
   // 直近8年（現在の年を含む、新しい順）
   const YEARS: number[] = Array.from({ length: 8 }, (_, i) => CURRENT_YEAR - i);
@@ -67,7 +72,7 @@
   async function load() {
     const user = username.trim();
     if (!user) {
-      errorMsg = "Enter a GitHub username";
+      errorMsg = "GitHubのユーザー名を入力してください";
       return;
     }
     loading = true;
@@ -84,7 +89,7 @@
     } catch {
       days = [];
       yearTotal = 0;
-      errorMsg = "User not found — check the username";
+      errorMsg = "ユーザーが見つかりません。ユーザー名を確認してください";
     } finally {
       loading = false;
     }
@@ -193,7 +198,7 @@
   });
 </script>
 
-<section class="glass-card gh-card" aria-label="GitHub contributions">
+<section class="glass-card gh-card" aria-label="GitHub Contributions">
   <!-- Toolbar -->
   <div class="gh-toolbar">
     <div class="gh-load-row">
@@ -202,17 +207,17 @@
         class="qr-field"
         bind:value={username}
         onkeydown={onKey}
-        placeholder="GitHub username (e.g. torvalds)"
+        placeholder="GitHubのユーザー名（例: torvalds）"
         autocapitalize="off"
         autocorrect="off"
         spellcheck="false"
       />
-      <button type="button" class="qr-action" onclick={load}>Load</button>
+      <button type="button" class="qr-action" onclick={load}>表示</button>
     </div>
 
     <div class="gh-controls-row">
       <div class="gh-control">
-        <span class="qr-section-label">Year</span>
+        <span class="qr-section-label">年</span>
         <div class="option-tabs">
           {#each YEARS as y (y)}
             <button
@@ -228,7 +233,7 @@
       </div>
 
       <div class="gh-control">
-        <span class="qr-section-label">View</span>
+        <span class="qr-section-label">表示</span>
         <div class="option-tabs">
           {#each ["Year", "Month"] as v (v)}
             <button
@@ -237,14 +242,14 @@
               class:is-active={view === v}
               onclick={() => (view = v as View)}
             >
-              {v}
+              {VIEW_LABELS[v as View]}
             </button>
           {/each}
         </div>
       </div>
 
       <div class="gh-control">
-        <span class="qr-section-label">Theme</span>
+        <span class="qr-section-label">テーマ</span>
         <div class="option-tabs">
           {#each ["Green", "Amber", "Violet"] as t (t)}
             <button
@@ -262,7 +267,7 @@
 
     {#if view === "Month"}
       <div class="gh-control">
-        <span class="qr-section-label">Month</span>
+        <span class="qr-section-label">月</span>
         <div class="option-tabs">
           {#each MONTHS as m, i (m)}
             <button
@@ -286,9 +291,9 @@
   <!-- Graph -->
   <div class="gh-graph">
     {#if loading}
-      <div class="gh-graph-loading">Loading contributions…</div>
+      <div class="gh-graph-loading">読み込み中…</div>
     {:else if days.length === 0}
-      <div class="gh-graph-empty">No contribution data to show.</div>
+      <div class="gh-graph-empty">表示できるデータがありません。</div>
     {:else if view === "Year"}
       <div class="gh-heatmap">
         <div class="gh-month-labels">
@@ -306,7 +311,7 @@
                   <div
                     class="gh-cell"
                     style={`background:${levelColor(cell.level, theme)}`}
-                    title={`${cell.count} contributions on ${cell.date}`}
+                    title={`${cell.date}: ${cell.count} 件のContributions`}
                   ></div>
                 {:else}
                   <div class="gh-cell is-empty"></div>
@@ -327,7 +332,7 @@
               class="gh-cal-cell"
               class:is-dark={isDarkText(cell.level)}
               style={`background:${levelColor(cell.level, theme)}`}
-              title={`${cell.count} contributions on ${cell.date}`}
+              title={`${cell.date}: ${cell.count} 件のContributions`}
             >
               {parseDate(cell.date).d}
             </div>
@@ -343,24 +348,24 @@
   {#if days.length > 0 && !loading}
     <div class="gh-stats">
       <div class="gh-stat">
-        <span class="gh-stat-label">Total</span>
+        <span class="gh-stat-label">合計</span>
         <span class="gh-stat-value">{yearTotal.toLocaleString()}</span>
-        <span class="gh-stat-sub">contributions in {year}</span>
+        <span class="gh-stat-sub">{year}年のContributions</span>
       </div>
       <div class="gh-stat">
-        <span class="gh-stat-label">Busiest day</span>
+        <span class="gh-stat-label">最も活発な日</span>
         <span class="gh-stat-value">{stats.busiestCount}</span>
         <span class="gh-stat-sub">{stats.busiestDate || "—"}</span>
       </div>
       <div class="gh-stat">
-        <span class="gh-stat-label">Longest streak</span>
+        <span class="gh-stat-label">最長連続日数</span>
         <span class="gh-stat-value">{stats.longestStreak}</span>
-        <span class="gh-stat-sub">consecutive days</span>
+        <span class="gh-stat-sub">日連続</span>
       </div>
       <div class="gh-stat">
-        <span class="gh-stat-label">Active days</span>
+        <span class="gh-stat-label">活動日数</span>
         <span class="gh-stat-value">{stats.activeDays}</span>
-        <span class="gh-stat-sub">days with activity</span>
+        <span class="gh-stat-sub">日間活動</span>
       </div>
     </div>
 

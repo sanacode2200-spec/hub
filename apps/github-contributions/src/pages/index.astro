@@ -9,9 +9,25 @@ import Footer from "../components/Footer.astro";
 ---
 
 <BaseLayout
-  title="GitHub Contributions Visualizer — ToolBox"
-  description="View any public GitHub user's contribution graph by month and year. See streaks, totals, and your busiest days. Free, no login, no token — runs entirely in your browser."
+  title="GitHub Contributions（草）ビジュアライザー 無料 | Toolbox"
+  description="GitHubの公開プロフィールのContributionsグラフ（草）を年・月単位で表示。連続記録や合計数、最も活発だった日が一目でわかります。無料・ログイン・トークン不要。"
 >
+  <script
+    type="application/ld+json"
+    slot="head"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      name: "GitHub Contributions ビジュアライザー",
+      url: Astro.site?.href,
+      description:
+        "GitHubユーザーのContributionsグラフ（草）を月・年単位で表示。無料・ログイン・トークン不要。",
+      applicationCategory: "DeveloperApplication",
+      operatingSystem: "Any (runs in browser)",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "JPY" },
+      inLanguage: "ja",
+    })}
+  />
   <main class="hub-shell" id="hub-shell">
     <div class="cursor-light" id="cursor-light"></div>
     <div class="grain-layer"></div>
@@ -20,6 +36,14 @@ import Footer from "../components/Footer.astro";
 
     <div class="hub-frame">
       <Nav />
+
+      <div class="gh-hero">
+        <h1 class="gh-hero-title">GitHub Contributions <em>ビジュアライザー</em></h1>
+        <p class="gh-hero-desc">
+          GitHubの公開プロフィールの草（Contributionsグラフ）を年・月単位で表示。無料・ログイン不要・トークン不要。
+        </p>
+      </div>
+
       <ContributionsTool client:load />
       <HowItWorks />
       <Features />
