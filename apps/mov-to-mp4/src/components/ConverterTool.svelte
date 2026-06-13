@@ -150,7 +150,10 @@
     if (fileInput) fileInput.value = "";
   }
 
-  onDestroy(clearOutputUrl);
+  onDestroy(() => {
+    clearOutputUrl();
+    ffmpeg?.terminate();
+  });
 </script>
 
 <div class="glass-card mov-tool" aria-label="MOV / WebM to MP4 コンバーター">

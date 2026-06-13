@@ -184,12 +184,17 @@ type Status = "idle" | "loading-ffmpeg" | "converting" | "done" | "error"
 - インタラクティブ部分は `OgpTool.svelte`（`client:load`）に集約：
   - テンプレートプリセット4種（Minimal / Gradient / Editorial / Terminal）
   - タイトル・サブタイトル・Eyebrow（バッジ）の入力欄
-  - 背景：Solid / Gradient切替 + カラーピッカー、文字色（自動で可読色補正）
+  - 背景：Solid / Gradient / Photo（画像アップロード）の3モード + カラーピッカー、文字色（自動で可読色補正）
+    - Photo：ドラッグ&ドロップまたはアップロードボタンで画像を読み込み`drawImageCover`で全面カバー表示、オーバーレイ濃度スライダー（`overlayOpacity`）で可読性を調整
+    - ※「画像アップロード」ボタンで`<input type="file">.click()`を直接呼ぶとLinux/Chrome（xdg-desktop-portal環境）でフリーズすることがあるため、Photoタブはドラッグ&ドロップを主経路にしている
   - フォント：Serif（Instrument Serif italic）/ Mono（DM Mono）/ Sans（system-ui）、整列：Left / Center
-  - プレビュー＝出力そのもの：`<canvas width="1200" height="630">` を直接描画（`ctx.measureText`で手動折り返し、タイトル最大4行・サブ最大3行）
+  - タイトル・サブタイトルの文字サイズスライダー（`titleSize` 48-96px / `subtitleSize` 22-38px）
+  - 日本語対応の手動ワードラップ（`tokenizeForWrap`/`breakToFit`/`wrapLines`）：CJKは文字単位、英数字は単語単位で改行し、はみ出しは「…」で省略
+  - プレビュー＝出力そのもの：`<canvas width="1200" height="630">` を直接描画（タイトル最大4行・サブ最大3行）
   - フォント読み込み待ち：`document.fonts.ready.then(redraw)` + `$effect`で状態変化ごとに再描画
+  - SNSプレビュー：サイトURL入力 + X / LINEタブで、`canvas.toDataURL()`を使ったシェア表示の簡易モックアップ（`.ogp-sns-preview` / `.sns-mock-x` / `.sns-mock-line`）
   - ダウンロード：`↓ PNG`（1200×630）/ `↓ PNG @2x`（2400×1260、オフスクリーンcanvas）
-- スタイル：`.qr-layout`（2カラム）/ `.option-tab` / `.palette-card` / `.color-control` / `.qr-action` など既存クラスを再利用。`global.css`は`qr-generator`からコピーし背景URLのみ`ogpic.png`に変更、`.ogp-*`クラスを末尾に追加
+- スタイル：`.qr-layout`（2カラム）/ `.option-tab` / `.palette-card` / `.color-control` / `.qr-action` など既存クラスを再利用。`global.css`は`qr-generator`からコピーし背景URLのみ`ogpic.png`に変更、`.ogp-*`クラス（`.ogp-range` / `.ogp-image-bg` / `.ogp-url-field` / `.ogp-sns-preview` / `.sns-mock*` / `.ogp-dropzone`など）を末尾に追加
 
 ---
 

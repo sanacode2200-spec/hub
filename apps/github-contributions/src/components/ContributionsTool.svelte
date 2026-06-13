@@ -55,6 +55,9 @@
   let loading = $state(false);
   let errorMsg = $state<string | null>(null);
 
+  // 連打・年切り替えで古いレスポンスが後から返ってきた場合に上書きしないためのカウンタ
+  let latestRequestId = 0;
+
   // テーマに応じてレベルから色を返す
   function levelColor(level: Level, t: Theme): string {
     if (level === 0) return EMPTY_COLOR;
@@ -77,21 +80,28 @@
     }
     loading = true;
     errorMsg = null;
+    const requestId = ++latestRequestId;
     try {
       const res = await fetch(
         `https://github-contributions-api.jogruber.de/v4/${encodeURIComponent(user)}?y=${year}`
       );
-      if (!res.ok) throw new Error("not found");
+      if (requestId !== latestRequestId) return;
+      if (res.status === 404) throw new Error("not found");
+      if (!res.ok) throw new Error("request failed");
       const data: ApiResponse = await res.json();
       if (!data || !Array.isArray(data.contributions)) throw new Error("bad data");
       days = data.contributions;
       yearTotal = data.total?.[String(year)] ?? 0;
-    } catch {
+    } catch (err) {
+      if (requestId !== latestRequestId) return;
       days = [];
       yearTotal = 0;
-      errorMsg = "ユーザーが見つかりません。ユーザー名を確認してください";
+      errorMsg =
+        err instanceof Error && err.message === "not found"
+          ? "ユーザーが見つかりません。ユーザー名を確認してください"
+          : "データの取得に失敗しました。時間をおいて再度お試しください";
     } finally {
-      loading = false;
+      if (requestId === latestRequestId) loading = false;
     }
   }
 

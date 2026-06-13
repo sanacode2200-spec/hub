@@ -1,8 +1,9 @@
 <script lang="ts">
   // OGP / social share image generator — 1200x630 canvas is the single source of truth
-  type BgMode = "solid" | "gradient";
+  type BgMode = "solid" | "gradient" | "image";
   type FontKind = "serif" | "mono" | "sans";
   type Align = "left" | "center";
+  type SnsPlatform = "x" | "line";
 
   type Preset = {
     name: string;
@@ -90,8 +91,16 @@
   let accent = $state("#e2d0b0");
   let font = $state<FontKind>("serif");
   let align = $state<Align>("left");
+  let titleSize = $state(78);
+  let subtitleSize = $state(30);
+  let bgImage = $state<HTMLImageElement | null>(null);
+  let overlayOpacity = $state(45);
+  let siteUrl = $state("");
+  let snsPlatform = $state<SnsPlatform>("x");
+  let previewDataUrl = $state("");
 
   let canvasEl: HTMLCanvasElement | null = $state(null);
+  let bgImageInput: HTMLInputElement | null = $state(null);
 
   function applyPreset(preset: Preset) {
     bgMode = preset.bgMode;
@@ -128,41 +137,139 @@
     return bgAvgLum > 0.5 ? "#15120e" : "#f7f4ee";
   }
 
-  // 手動ワードラップ：maxWidth を超えない行配列を返す（最大行数で打ち切り）
+  // 全角文字（漢字・かな・記号など）の判定 — 単語区切りがない言語は1文字ずつ改行できるようにする
+  const CJK_RE = /[\u3000-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff00-\uffef]/;
+
+  // テキストを「CJK1文字」「区切りなしの単語（英数字など）」「空白」のトークンに分割
+  function tokenizeForWrap(text: string): string[] {
+    const tokens: string[] = [];
+    let i = 0;
+    while (i < text.length) {
+      const ch = text[i];
+      if (/\s/.test(ch)) {
+        tokens.push(" ");
+        i++;
+      } else if (CJK_RE.test(ch)) {
+        tokens.push(ch);
+        i++;
+      } else {
+        let j = i + 1;
+        while (j < text.length && !/\s/.test(text[j]) && !CJK_RE.test(text[j])) j++;
+        tokens.push(text.slice(i, j));
+        i = j;
+      }
+    }
+    return tokens;
+  }
+
+  // 1トークンが maxWidth に収まらない場合、文字単位で分割する
+  function breakToFit(ctx: CanvasRenderingContext2D, token: string, maxWidth: number): string[] {
+    if (ctx.measureText(token).width <= maxWidth) return [token];
+    const pieces: string[] = [];
+    let current = "";
+    for (const ch of token) {
+      const test = current + ch;
+      if (ctx.measureText(test).width <= maxWidth || !current) {
+        current = test;
+      } else {
+        pieces.push(current);
+        current = ch;
+      }
+    }
+    if (current) pieces.push(current);
+    return pieces;
+  }
+
+  // 手動ワードラップ：日本語は文字単位、英数字は単語単位で改行し、maxLinesで打ち切る（はみ出しは末尾に…）
   function wrapLines(
     ctx: CanvasRenderingContext2D,
     text: string,
     maxWidth: number,
     maxLines: number
   ): string[] {
-    const words = text.replace(/\s+/g, " ").trim().split(" ");
+    const tokens = tokenizeForWrap(text.replace(/\s+/g, " ").trim());
     const lines: string[] = [];
     let current = "";
-    for (const word of words) {
-      const test = current ? current + " " + word : word;
-      if (ctx.measureText(test).width <= maxWidth || !current) {
+    let i = 0;
+
+    while (i < tokens.length && lines.length < maxLines) {
+      const token = tokens[i];
+
+      if (token === " ") {
+        if (!current) {
+          i++;
+          continue;
+        }
+        const test = current + " ";
+        if (ctx.measureText(test).width <= maxWidth) {
+          current = test;
+        } else {
+          lines.push(current);
+          current = "";
+        }
+        i++;
+        continue;
+      }
+
+      const test = current + token;
+      if (ctx.measureText(test).width <= maxWidth) {
         current = test;
-      } else {
-        lines.push(current);
-        current = word;
-        if (lines.length === maxLines - 1) break;
+        i++;
+        continue;
       }
+
+      if (current) {
+        lines.push(current.replace(/\s+$/, ""));
+        current = "";
+        continue; // 同じトークンを新しい行で再評価
+      }
+
+      // current が空でもトークン自体が入らない場合は文字単位で分割
+      const pieces = breakToFit(ctx, token, maxWidth);
+      for (const piece of pieces) {
+        if (lines.length >= maxLines) break;
+        if (piece === pieces[pieces.length - 1]) {
+          current = piece;
+        } else {
+          lines.push(piece);
+        }
+      }
+      i++;
     }
-    if (current && lines.length < maxLines) lines.push(current);
-    // 全単語が収まらず打ち切った場合は末尾を省略記号に
-    const consumed = lines.join(" ").split(" ").filter(Boolean).length;
-    if (lines.length === maxLines && consumed < words.length) {
+
+    if (lines.length < maxLines && current.trim()) {
+      lines.push(current.replace(/\s+$/, ""));
+      current = "";
+    }
+
+    const remaining = i < tokens.length || (current.trim() !== "" && lines.length >= maxLines);
+    if (remaining && lines.length === maxLines) {
       let last = lines[maxLines - 1];
-      while (
-        last &&
-        ctx.measureText(last + "…").width > maxWidth &&
-        last.includes(" ")
-      ) {
-        last = last.slice(0, last.lastIndexOf(" "));
+      while (last.length > 1 && ctx.measureText(last + "…").width > maxWidth) {
+        last = last.slice(0, -1);
       }
-      lines[maxLines - 1] = last + "…";
+      lines[maxLines - 1] = last.replace(/\s+$/, "") + "…";
     }
+
     return lines;
+  }
+
+  // 背景画像を canvas 全面にカバー表示（中央クロップ）
+  function drawImageCover(ctx: CanvasRenderingContext2D, img: HTMLImageElement, w: number, h: number) {
+    const imgRatio = img.width / img.height;
+    const boxRatio = w / h;
+    let sx = 0;
+    let sy = 0;
+    let sw = img.width;
+    let sh = img.height;
+    if (imgRatio > boxRatio) {
+      sw = img.height * boxRatio;
+      sx = (img.width - sw) / 2;
+    } else {
+      sh = img.width / boxRatio;
+      sy = (img.height - sh) / 2;
+    }
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
   }
 
   function draw(ctx: CanvasRenderingContext2D, scale: number) {
@@ -171,15 +278,20 @@
     ctx.clearRect(0, 0, w, h);
 
     // 背景
-    if (bgMode === "gradient") {
+    if (bgMode === "image" && bgImage) {
+      drawImageCover(ctx, bgImage, w, h);
+      ctx.fillStyle = `rgba(8, 8, 10, ${overlayOpacity / 100})`;
+      ctx.fillRect(0, 0, w, h);
+    } else if (bgMode === "gradient") {
       const g = ctx.createLinearGradient(0, 0, w, h); // 135deg 相当（左上→右下）
       g.addColorStop(0, gradient[0]);
       g.addColorStop(1, gradient[1]);
       ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
     } else {
       ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, w, h);
     }
-    ctx.fillRect(0, 0, w, h);
 
     // 控えめなラジアルヴィネット
     const vignette = ctx.createRadialGradient(
@@ -197,9 +309,11 @@
 
     // 背景平均輝度（読みやすい色を選ぶため）
     const bgLum =
-      bgMode === "gradient"
-        ? (relativeLuminance(gradient[0]) + relativeLuminance(gradient[1])) / 2
-        : relativeLuminance(bgColor);
+      bgMode === "image" && bgImage
+        ? Math.max(0, 0.55 - (overlayOpacity / 100) * 0.6)
+        : bgMode === "gradient"
+          ? (relativeLuminance(gradient[0]) + relativeLuminance(gradient[1])) / 2
+          : relativeLuminance(bgColor);
     const bodyColor = readableTextColor(textColor, bgLum);
     const subColor =
       bgLum > 0.5 ? "rgba(20,16,12,0.62)" : "rgba(255,255,255,0.6)";
@@ -241,9 +355,9 @@
     }
 
     // Title（大きく・太く・ワードラップ・最大4行）
-    const titleSize = 78 * scale;
-    const titleLineH = titleSize * 1.08;
-    ctx.font = `${titleStyle(font)} ${titleSize}px ${family}`;
+    const titleSizePx = titleSize * scale;
+    const titleLineH = titleSizePx * 1.08;
+    ctx.font = `${titleStyle(font)} ${titleSizePx}px ${family}`;
     ctx.fillStyle = bodyColor;
     const titleLines = wrapLines(ctx, title || " ", contentW * 0.96, 4);
     for (const line of titleLines) {
@@ -254,9 +368,9 @@
     // Subtitle（小さめ・ミュート・ワードラップ）
     const subText = subtitle.trim();
     if (subText) {
-      const subSize = 30 * scale;
-      const subLineH = subSize * 1.42;
-      ctx.font = `${bodyStyle()} ${subSize}px ${family === '"Instrument Serif"' ? '"DM Mono"' : family}`;
+      const subSizePx = subtitleSize * scale;
+      const subLineH = subSizePx * 1.42;
+      ctx.font = `${bodyStyle()} ${subSizePx}px ${family === '"Instrument Serif"' ? '"DM Mono"' : family}`;
       ctx.fillStyle = subColor;
       const subLines = wrapLines(ctx, subText, contentW * 0.88, 3);
       cursorY += 30 * scale;
@@ -302,6 +416,7 @@
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     draw(ctx, 1);
+    previewDataUrl = canvas.toDataURL("image/jpeg", 0.85);
   }
 
   function download(scale: number, filename: string) {
@@ -329,6 +444,47 @@
     download(2, "og-image@2x.png");
   }
 
+  function loadBgImageFile(file: File) {
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        bgImage = img;
+      };
+      img.src = ev.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleBgImageUpload(e: Event) {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) loadBgImageFile(file);
+  }
+
+  function removeBgImage() {
+    bgImage = null;
+    if (bgImageInput) bgImageInput.value = "";
+  }
+
+  let isDraggingBg = $state(false);
+
+  function handleBgDragOver(e: DragEvent) {
+    e.preventDefault();
+    isDraggingBg = true;
+  }
+
+  function handleBgDragLeave() {
+    isDraggingBg = false;
+  }
+
+  function handleBgDrop(e: DragEvent) {
+    e.preventDefault();
+    isDraggingBg = false;
+    const file = e.dataTransfer?.files?.[0];
+    if (file) loadBgImageFile(file);
+  }
+
   // 状態が変わるたびに再描画。フォント読み込み完了後にも再描画
   $effect(() => {
     // 依存を明示的に参照してリアクティブに
@@ -344,6 +500,10 @@
       accent,
       font,
       align,
+      titleSize,
+      subtitleSize,
+      bgImage,
+      overlayOpacity,
       canvasEl,
     ];
     redraw();
@@ -429,7 +589,23 @@
           class:is-active={bgMode === "gradient"}
           onclick={() => (bgMode = "gradient")}>Gradient</button
         >
+        <button
+          type="button"
+          class="option-tab"
+          class:is-active={bgMode === "image"}
+          onclick={() => {
+            bgMode = "image";
+            activePreset = null;
+          }}>Photo</button
+        >
       </div>
+      <input
+        bind:this={bgImageInput}
+        type="file"
+        accept="image/*"
+        onchange={handleBgImageUpload}
+        style="display:none"
+      />
 
       {#if bgMode === "solid"}
         <div class="color-controls">
@@ -442,7 +618,7 @@
             </label>
           </div>
         </div>
-      {:else}
+      {:else if bgMode === "gradient"}
         <div class="color-controls">
           <div class="color-control">
             <div class="color-control-label">Start</div>
@@ -460,6 +636,32 @@
               <input type="color" bind:value={gradient[1]} />
             </label>
           </div>
+        </div>
+      {:else}
+        <div class="ogp-image-bg">
+          <div
+            class="ogp-dropzone"
+            class:is-dragging={isDraggingBg}
+            ondragover={handleBgDragOver}
+            ondragleave={handleBgDragLeave}
+            ondrop={handleBgDrop}
+          >
+            {#if bgImage}
+              <div class="logo-row">
+                <button type="button" class="logo-button" onclick={() => bgImageInput?.click()}>画像を変更</button>
+                <button type="button" class="logo-button remove" onclick={removeBgImage}>削除</button>
+              </div>
+            {:else}
+              <button type="button" class="logo-button" onclick={() => bgImageInput?.click()}>画像をアップロード</button>
+              <p class="option-hint">ここに画像をドラッグ&ドロップ、またはクリックして選択</p>
+            {/if}
+          </div>
+          {#if bgImage}
+            <div class="color-control">
+              <div class="color-control-label">オーバーレイの濃さ: {overlayOpacity}%</div>
+              <input type="range" class="ogp-range" min="0" max="85" step="5" bind:value={overlayOpacity} />
+            </div>
+          {/if}
         </div>
       {/if}
     </div>
@@ -527,6 +729,16 @@
         >
       </div>
     </div>
+
+    <div>
+      <span class="qr-section-label">タイトルサイズ: {titleSize}px</span>
+      <input type="range" class="ogp-range" min="48" max="96" step="2" bind:value={titleSize} />
+    </div>
+
+    <div>
+      <span class="qr-section-label">サブタイトルサイズ: {subtitleSize}px</span>
+      <input type="range" class="ogp-range" min="22" max="38" step="1" bind:value={subtitleSize} />
+    </div>
   </div>
 
   <aside class="tool-preview" aria-label="OG画像のプレビュー">
@@ -544,6 +756,53 @@
     <div class="qr-download-row">
       <button type="button" class="qr-action" onclick={downloadPNG}>↓ PNG</button>
       <button type="button" class="qr-action" onclick={downloadPNG2x}>↓ PNG @2x</button>
+    </div>
+
+    <div class="qr-divider"></div>
+
+    <div class="ogp-sns-preview">
+      <span class="qr-section-label">SNSでの表示プレビュー</span>
+      <input
+        type="text"
+        class="qr-field ogp-url-field"
+        bind:value={siteUrl}
+        placeholder="example.com"
+      />
+      <div class="option-tabs">
+        <button
+          type="button"
+          class="option-tab"
+          class:is-active={snsPlatform === "x"}
+          onclick={() => (snsPlatform = "x")}>X (Twitter)</button
+        >
+        <button
+          type="button"
+          class="option-tab"
+          class:is-active={snsPlatform === "line"}
+          onclick={() => (snsPlatform = "line")}>LINE</button
+        >
+      </div>
+
+      {#if snsPlatform === "x"}
+        <div class="sns-mock sns-mock-x">
+          <div class="sns-mock-image" style={`background-image:url(${previewDataUrl})`}></div>
+          <div class="sns-mock-meta">
+            <div class="sns-mock-domain">{siteUrl.trim() || "example.com"}</div>
+            <div class="sns-mock-title">{title || "タイトル"}</div>
+          </div>
+        </div>
+      {:else}
+        <div class="sns-mock sns-mock-line">
+          <div class="sns-mock-image" style={`background-image:url(${previewDataUrl})`}></div>
+          <div class="sns-mock-meta">
+            <div class="sns-mock-title">{title || "タイトル"}</div>
+            {#if subtitle.trim()}
+              <div class="sns-mock-desc">{subtitle}</div>
+            {/if}
+            <div class="sns-mock-domain">{siteUrl.trim() || "example.com"}</div>
+          </div>
+        </div>
+      {/if}
     </div>
   </aside>
 </div>

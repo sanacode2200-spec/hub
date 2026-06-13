@@ -208,11 +208,12 @@
     scanStatus = "scanning";
     scannedValue = null;
     try {
+      const jsQR = (await import("jsqr")).default;
       stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
       const video = videoEl!;
       video.srcObject = stream;
       await video.play();
-      const tick = async () => {
+      const tick = () => {
         const canvas = scanCanvas;
         if (!canvas || !video.videoWidth) {
           rafId = requestAnimationFrame(tick);
@@ -223,7 +224,6 @@
         const ctx = canvas.getContext("2d")!;
         ctx.drawImage(video, 0, 0);
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const jsQR = (await import("jsqr")).default;
         const code = jsQR(imageData.data, imageData.width, imageData.height);
         if (code) {
           scannedValue = code.data;
