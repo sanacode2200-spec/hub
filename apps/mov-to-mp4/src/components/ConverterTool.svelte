@@ -1,7 +1,36 @@
 <script lang="ts">
+  import { onDestroy } from "svelte";
+  import type { FFmpeg } from "@ffmpeg/ffmpeg";
+
   type Status = "idle" | "loading-ffmpeg" | "converting" | "done" | "error";
+  type InputFormat = {
+    extension: "mov" | "webm";
+    mimeType: string;
+    command: (inputName: string) => string[];
+  };
 
   const FFMPEG_CORE_URL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+  const OUTPUT_FILE = "output.mp4";
+  const INPUT_FORMATS: InputFormat[] = [
+    {
+      extension: "mov",
+      mimeType: "video/quicktime",
+      command: (inputName) => ["-i", inputName, "-c", "copy", OUTPUT_FILE],
+    },
+    {
+      extension: "webm",
+      mimeType: "video/webm",
+      command: (inputName) => [
+        "-i", inputName,
+        "-c:v", "libx264",
+        "-preset", "veryfast",
+        "-crf", "23",
+        "-c:a", "aac",
+        "-b:a", "128k",
+        OUTPUT_FILE,
+      ],
+    },
+  ];
 
   let status = $state<Status>("idle");
   let progress = $state(0);
@@ -11,10 +40,29 @@
   let isDragOver = $state(false);
   let errorMsg = $state<string | null>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let ffmpeg: any = null;
+  let ffmpeg: FFmpeg | null = null;
   let startTime = 0;
   let fileInput: HTMLInputElement | null = $state(null);
+
+  function getInputFormat(file: File) {
+    return INPUT_FORMATS.find(
+      ({ extension, mimeType }) =>
+        file.type === mimeType || file.name.toLowerCase().endsWith(`.${extension}`)
+    );
+  }
+
+  function clearOutputUrl() {
+    if (outputUrl) URL.revokeObjectURL(outputUrl);
+    outputUrl = null;
+  }
+
+  async function deleteFile(instance: FFmpeg, fileName: string) {
+    try {
+      await instance.deleteFile(fileName);
+    } catch {
+      // The file may not exist if conversion failed before it was created.
+    }
+  }
 
   async function loadFFmpeg() {
     const { FFmpeg } = await import("@ffmpeg/ffmpeg");
@@ -33,27 +81,28 @@
   }
 
   async function convert(file: File) {
-    if (!file.name.match(/\.(mov)$/i) && file.type !== "video/quicktime") {
-      errorMsg = "MOVファイルを選択してください。";
+    const format = getInputFormat(file);
+    if (!format) {
+      errorMsg = "MOVまたはWebMファイルを選択してください。";
       return;
     }
     errorMsg = null;
-    outputUrl = null;
+    clearOutputUrl();
     status = "loading-ffmpeg";
     progress = 0;
     startTime = Date.now();
 
+    let instance: FFmpeg | null = null;
+    const inputName = `input.${format.extension}`;
+
     try {
       const { fetchFile } = await import("@ffmpeg/util");
-      const instance = ffmpeg ?? (await loadFFmpeg());
+      instance = ffmpeg ?? (await loadFFmpeg());
 
       status = "converting";
-      await instance.writeFile("input.mov", await fetchFile(file));
-      await instance.exec(["-i", "input.mov", "-c", "copy", "output.mp4"]);
-      const raw = (await instance.readFile("output.mp4")) as Uint8Array;
-
-      await instance.deleteFile("input.mov");
-      await instance.deleteFile("output.mp4");
+      await instance.writeFile(inputName, await fetchFile(file));
+      await instance.exec(format.command(inputName));
+      const raw = (await instance.readFile(OUTPUT_FILE)) as Uint8Array;
 
       const data = new Uint8Array(raw);
       const blob = new Blob([data], { type: "video/mp4" });
@@ -68,8 +117,15 @@
       status = "done";
     } catch (err) {
       console.error(err);
-      errorMsg = "このファイルは変換できませんでした。別のMOVファイルでお試しください。";
+      errorMsg = "このファイルは変換できませんでした。別のファイルでお試しください。";
       status = "error";
+    } finally {
+      if (instance) {
+        await Promise.all([
+          deleteFile(instance, inputName),
+          deleteFile(instance, OUTPUT_FILE),
+        ]);
+      }
     }
   }
 
@@ -86,17 +142,18 @@
   }
 
   function reset() {
-    if (outputUrl) URL.revokeObjectURL(outputUrl);
-    outputUrl = null;
+    clearOutputUrl();
     status = "idle";
     progress = 0;
     stats = null;
     errorMsg = null;
     if (fileInput) fileInput.value = "";
   }
+
+  onDestroy(clearOutputUrl);
 </script>
 
-<div class="glass-card mov-tool" aria-label="MOV to MP4 コンバーター">
+<div class="glass-card mov-tool" aria-label="MOV / WebM to MP4 コンバーター">
   {#if status === "idle" || status === "error"}
     <div
       class="mov-dropzone"
@@ -112,12 +169,12 @@
       <input
         bind:this={fileInput}
         type="file"
-        accept=".mov,.MOV,video/quicktime"
+        accept=".mov,.MOV,.webm,.WEBM,video/quicktime,video/webm"
         onchange={handleFileChange}
         style="display:none"
       />
       <div class="mov-dropzone-icon">↑</div>
-      <div class="mov-dropzone-title">MOVファイルをここにドロップ</div>
+      <div class="mov-dropzone-title">MOV / WebMファイルをここにドロップ</div>
       <div class="mov-dropzone-hint">またはクリックして選択 — ブラウザ内で変換されます</div>
     </div>
 

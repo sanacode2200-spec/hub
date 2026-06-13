@@ -1,5 +1,16 @@
 ---
 import { categories, tools } from "../data/tools";
+
+const previewTools = tools.map(
+  ({ slug, nameEn, descriptionEn, icon, status, url }) => ({
+    slug,
+    nameEn,
+    descriptionEn,
+    icon,
+    status,
+    url,
+  })
+);
 ---
 
 <section class="tool-section" aria-label="ツール一覧">
@@ -35,11 +46,6 @@ import { categories, tools } from "../data/tools";
           const dataAttrs = {
             "data-slug": tool.slug,
             "data-category": tool.category,
-            "data-name": tool.name,
-            "data-description": tool.description,
-            "data-icon": tool.icon,
-            "data-status": tool.status,
-            "data-url": tool.url,
             "data-index": String(index),
           };
 
@@ -56,34 +62,34 @@ import { categories, tools } from "../data/tools";
       }
     </div>
 
-    <aside class="tool-preview" id="tool-preview" aria-label="ツールのプレビュー"></aside>
+    <aside class="tool-preview" id="tool-preview" aria-label="Tool preview"></aside>
   </div>
 </section>
 
-<script define:vars={{ tools: tools.map(({ slug, name, description, icon, status, url }) => ({ slug, name, description, icon, status, url })) }}>
+<script define:vars={{ previewTools }}>
   const categoryBar = document.getElementById("category-bar");
   const toolList = document.getElementById("tool-list");
   const preview = document.getElementById("tool-preview");
   const rows = Array.from(toolList?.querySelectorAll(".tool-row") ?? []);
+  const toolsBySlug = new Map(previewTools.map((tool) => [tool.slug, tool]));
 
   function renderPreview(tool) {
     if (!preview) return;
     preview.innerHTML = `
       <span class="preview-icon" aria-hidden="true">${tool.icon}</span>
       <span class="tool-status ${tool.status}">${tool.status}</span>
-      <h2>${tool.name}</h2>
-      <p>${tool.description}</p>
+      <h2>${tool.nameEn}</h2>
+      <p>${tool.descriptionEn}</p>
       ${
         tool.status === "live"
-          ? `<a href="${tool.url}" class="preview-action">開く</a>`
-          : `<span class="preview-action disabled">近日公開</span>`
+          ? `<a href="${tool.url}" class="preview-action">Open tool</a>`
+          : `<span class="preview-action disabled">Coming soon</span>`
       }
     `;
   }
 
   function selectTool(slug) {
-    rows.forEach((row) => row.classList.toggle("is-selected", row.dataset.slug === slug));
-    const tool = tools.find((t) => t.slug === slug);
+    const tool = toolsBySlug.get(slug);
     if (tool) renderPreview(tool);
   }
 
@@ -134,5 +140,5 @@ import { categories, tools } from "../data/tools";
   rows.forEach((row) => observer.observe(row));
 
   // Initial preview = first tool
-  if (tools[0]) selectTool(tools[0].slug);
+  if (previewTools[0]) selectTool(previewTools[0].slug);
 </script>

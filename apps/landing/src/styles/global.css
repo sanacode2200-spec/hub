@@ -440,9 +440,9 @@ body {
   transition:
     opacity 520ms ease,
     transform 520ms ease,
-    background 180ms ease,
-    border-color 180ms ease,
-    padding 180ms ease;
+    background 100ms ease,
+    border-color 100ms ease,
+    padding 100ms ease;
 }
 
 .tool-row.is-visible {
@@ -451,7 +451,7 @@ body {
 }
 
 .tool-row:hover,
-.tool-row.is-selected {
+.tool-row:focus-visible {
   background: rgba(226, 208, 176, 0.04);
   border-color: rgba(226, 208, 176, 0.32);
   padding-left: 14px;
@@ -476,7 +476,7 @@ body {
   color: rgba(255, 255, 255, 0.88);
   font-family: var(--font-noto-sans-jp), sans-serif;
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 250;
   line-height: 1;
 }
 
@@ -531,17 +531,21 @@ body {
 
 .tool-preview h2 {
   margin-top: auto;
+  min-width: 0;
   color: rgba(255, 255, 255, 0.92);
-  font-family: var(--font-noto-sans-jp), sans-serif;
+  font-family: var(--font-instrument-serif), serif;
   font-size: 48px;
-  font-weight: 700;
-  line-height: 1;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.15;
   letter-spacing: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .tool-preview p {
   color: rgba(255, 255, 255, 0.52);
-  font-family: var(--font-dm-mono), var(--font-noto-sans-jp), monospace;
+  font-family: var(--font-dm-mono), monospace;
   font-size: 12px;
   line-height: 1.7;
 }

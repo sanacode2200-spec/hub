@@ -8,7 +8,7 @@
 - 広告なし・サーバー処理なし・スキャン上限なし・有効期限なし
 - デプロイ：Vercel / ドメイン：Cloudflare
 - **ターゲット：国内（日本）ユーザー**
-- **UI言語：全テキスト日本語**（ブランド名・技術/フォーマット用語・デザイン用語のラベルは英語のまま）
+- **UI言語：ヒーロー見出し（`<h1>`）とページ`<title>`は英語、本文・説明文・UIラベルは日本語**（ブランド名・技術/フォーマット用語・デザイン用語のラベルは元から英語）
 
 ---
 
@@ -20,7 +20,7 @@
 | 各ツール (`apps/qr-generator`, `apps/mov-to-mp4`, `apps/ogp-generator`, `apps/github-contributions`) | Astro 6 + Svelte 5（`@astrojs/svelte`）、すべて独立スタンドアロンアプリ |
 | スタイリング | プレーンCSS（全アプリ共通の `.glass-card` デザイン、`apps/qr-generator/src/styles/global.css` がベース） |
 | モノレポ | Turborepo (`npm@11.12.1`) |
-| フォント | Instrument Serif（italic）+ DM Mono + Apoc Revelations（ワードマーク） + Noto Sans JP（日本語見出し・本文） |
+| フォント | Instrument Serif（italic、英語のヒーロー見出し用） + DM Mono + Apoc Revelations（ワードマーク） + Noto Sans JP（日本語本文、weight 300〜500） |
 | QR生成 | `qrcode` + `jsqr`（カメラスキャン確認） |
 | 変換エンジン | `@ffmpeg/ffmpeg@0.12` + `@ffmpeg/core@0.12.6` |
 
@@ -32,7 +32,7 @@
 |--------|------|----------|--------------|
 | `apps/landing` | **トップページ**（ガラスカード、Astro） | 4321 | `npm run dev:landing` |
 | `apps/qr-generator` | QR Generator（ガラスカード + qrpic背景、Astro+Svelte） | 4322 | `npm run dev:qr-generator` |
-| `apps/mov-to-mp4` | MOV→MP4（ガラスカード + ancient-city背景、Astro+Svelte） | 3001 | `npm run dev:mov-to-mp4` |
+| `apps/mov-to-mp4` | MOV/WebM→MP4（ガラスカード + ancient-city背景、Astro+Svelte） | 3001 | `npm run dev:mov-to-mp4` |
 | `apps/ogp-generator` | OGP Generator（ガラスカード + pic5背景、Astro+Svelte） | 4323 | `npm run dev:ogp-generator` |
 | `apps/github-contributions` | GitHub Contributions Visualizer（ガラスカード + pic6背景、Astro+Svelte） | 4324 | `npm run dev:github-contributions` |
 
@@ -75,11 +75,11 @@ hub/
 │   │   │   │   └── ContributionsTool.svelte  # 年/月ヒートマップ・統計 (client:load)
 │   │   │   └── styles/global.css     # qr-generator由来 + gh-*専用クラス、背景はghpic.png(pic6)
 │   │   └── public/{images,fonts}/
-│   └── mov-to-mp4/                   # MOV→MP4（Astro+Svelte, port 3001）★現行
+│   └── mov-to-mp4/                   # MOV/WebM→MP4（Astro+Svelte, port 3001）★現行
 │       ├── src/
 │       │   ├── pages/index.astro     # Nav → Hero → ConverterTool → HowItWorks → Features → CTA → Footer
 │       │   ├── components/
-│       │   │   └── ConverterTool.svelte  # ffmpeg.wasmでremux・進捗表示・DL (client:load)
+│       │   │   └── ConverterTool.svelte  # ffmpeg.wasmでMOVはremux・WebMは再エンコード、進捗表示・DL (client:load)
 │       │   └── styles/global.css     # qr-generator由来 + mov-*専用クラス、背景はancient-city.png
 │       └── public/{images,fonts}/
 ├── packages/
@@ -99,7 +99,7 @@ hub/
 npm run dev               # 全アプリ起動
 npm run dev:landing       # トップページ（port 4321）★
 npm run dev:qr-generator  # QR Generator（port 4322）★
-npm run dev:mov-to-mp4    # MOV→MP4（port 3001）★
+npm run dev:mov-to-mp4    # MOV/WebM→MP4（port 3001）★
 npm run dev:ogp-generator         # OGP Generator（port 4323）★
 npm run dev:github-contributions  # GitHub Contributions Visualizer（port 4324）★
 npm run build             # 全ビルド
@@ -111,7 +111,7 @@ npm run build             # 全ビルド
 
 | slug | 名前 | カテゴリ | ステータス | 実体 |
 |------|------|----------|-----------|------|
-| `mov-to-mp4` | MOV → MP4 | video | **live** | `apps/mov-to-mp4`（Astro+Svelte, port 3001） |
+| `mov-to-mp4` | MOV/WebM → MP4 | video | **live** | `apps/mov-to-mp4`（Astro+Svelte, port 3001） |
 | `qr-generator` | QR Generator | generate | **live** | `apps/qr-generator`（Astro+Svelte, port 4322） |
 | `heic-to-jpg` | HEIC → JPG | image | soon | 未実装 |
 | `image-compress` | Image Compress | image | soon | 未実装 |
@@ -121,7 +121,7 @@ npm run build             # 全ビルド
 
 **新ツール追加の手順（推奨：独立Astroアプリ方式）：**
 1. `apps/<slug>/` に `apps/qr-generator` を参考にAstroアプリを新規作成（インタラクティブ部分が多ければSvelteコンポーネント）
-2. `apps/landing/src/data/tools.ts` にエントリを追加（`url` は `PUBLIC_<SLUG>_URL ?? "http://localhost:<port>"`）
+2. `apps/landing/src/data/tools.ts` にエントリを追加（`url` は `PUBLIC_<SLUG>_URL ?? "http://localhost:<port>"`。`nameEn`/`descriptionEn` も必須 — トップページのプレビューパネル（英語表示）で使用）
 3. `apps/landing/src/styles/global.css` の `.glass-card` 系クラスを流用してデザインを揃える
 4. ルート `package.json` に `dev:<slug>` スクリプトを追加、`astro.config.mjs` で `server.port` を指定
 
@@ -136,7 +136,7 @@ npm run build             # 全ビルド
 - `.hero-title`（"TOOLBOX"）：`color: transparent` + `-webkit-text-stroke` の透明アウトライン文字
 - カーソル追従のアンビエントグロー（`.cursor-light`）+ grain texture overlay（`.grain-layer`）+ `.ambient-*` ぼかし玉
 - gitログティッカー（`GitTicker.astro`、GitHub APIから取得、vanilla JS）
-- カテゴリフィルター（`.category-button`、ピル型）+ ツール一覧 + プレビューパネル（`ToolsSection.astro`、vanilla JS + IntersectionObserver）
+- カテゴリフィルター（`.category-button`、ピル型）+ ツール一覧 + プレビューパネル（`ToolsSection.astro`、vanilla JS + IntersectionObserver）。プレビューパネルは英語表示（`tools.ts`の`nameEn`/`descriptionEn`、ボタンは"Open tool"/"Coming soon"）
 
 ### 実装方針
 
@@ -149,9 +149,11 @@ npm run build             # 全ビルド
 - 背景：`apps/mov-to-mp4/public/images/ancient-city.png` + 濃いめのオーバーレイ（`.glass-card`系デザイン）
 - ヒーロー（`.mov-hero` / `.mov-hero-title` / `.mov-hero-desc`）→ `ConverterTool.svelte`（`client:load`）→ HowItWorks → Features → CTA → Footer
 - インタラクティブ部分は `ConverterTool.svelte` に集約：
-  - ドラッグ&ドロップ / ファイル選択（`.mov-dropzone`）
+  - ドラッグ&ドロップ / ファイル選択（`.mov-dropzone`、`.mov`/`.webm`を受付）
   - ffmpeg.wasm は **初回のみロード**（`ffmpeg`変数でキャッシュ）
-  - 変換コマンド：`ffmpeg -i input.mov -c copy output.mp4`（remuxing、再エンコードなし）
+  - 入力フォーマットは `INPUT_FORMATS`（拡張子で判定）でコマンドを切り替え：
+    - MOV → `ffmpeg -i input.mov -c copy output.mp4`（remuxing、再エンコードなし）
+    - WebM → `ffmpeg -i input.webm -c:v libx264 -preset veryfast -crf 23 -c:a aac -b:a 128k output.mp4`（再エンコード）
   - WASM/JSは `https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd` から `toBlobURL` で取得
   - ファイルはメモリ上のみ（`ffmpeg.writeFile` / `readFile`）、変換後に `deleteFile`
   - 進捗表示：`ffmpeg.on("progress", ...)` でパーセント表示
@@ -214,18 +216,20 @@ type Status = "idle" | "loading-ffmpeg" | "converting" | "done" | "error"
 - ダーク・ミニマル・grain texture・背景写真 + ガラスカード
 - フォント：Instrument Serif italic（見出し）+ DM Mono（本文・ラベル）+ Apoc Revelations（ワードマーク）
 - カラー：白 `rgba(255,255,255,0.xx)` の透明度で階層表現
-- 日本語テキストは `--font-noto-sans-jp`（Noto Sans JP）で表示。Instrument Serif / DM Mono / Apoc Revelationsは「TOOLBOX」「sanacode」などの英語ブランド要素にのみ使用
+- 日本語テキストは `--font-noto-sans-jp`（Noto Sans JP）で表示。Instrument Serif / DM Mono / Apoc Revelationsは「TOOLBOX」「sanacode」、ツールプレビューの英語見出し（`.tool-preview h2`）など英語要素に使用
 
 ### 各ツールページ
 - 全ツールアプリ（`apps/qr-generator` / `apps/mov-to-mp4` / `apps/ogp-generator` / `apps/github-contributions`）は `apps/qr-generator/src/styles/global.css` を起点にコピーし、`.hub-shell::before` の背景画像のみ差し替えてトンマナを統一（アクセント `#e2d0b0` 共通）
 - 構成：（ヒーロー →）ツール本体 → 使い方 → 特徴 → トップページへの導線（"無料ツール一覧を見る →"）
-- 日本語の見出し・本文はNoto Sans JP（700）を使用。デザイン用語のラベル（Solid/Gradient、Serif/Mono/Sans、Left/Center、Less/More、パレット名・テンプレート名・テーマ名、Square/Round、Foreground/Background/Start/End/Text/Accent、曜日・月の英語略称など）は英語のまま
+- ヒーロー見出し（`<h1 class="*-hero-title">`）とページ`<title>`は英語。フォントはInstrument Serif italic（`<em>`部分もitalic＋アクセントカラー、landingの「TOOLBOX」と同トンマナ）
+- ヒーロー以外の見出し・本文はNoto Sans JP（300〜500、従来の700から軽量化）を使用し日本語のまま。デザイン用語のラベル（Solid/Gradient、Serif/Mono/Sans、Left/Center、Less/More、パレット名・テンプレート名・テーマ名、Square/Round、Foreground/Background/Start/End/Text/Accent、曜日・月の英語略称など）も英語のまま
 
 ### SEO戦略
 - 各ツールページが集客の主役（ユーザーはツールページに直接着地）
 - トップページは回遊の場（使ってよかったらトップへ）
 - ヒーローセクションで3秒以内に価値を伝える
-- 各ページ単体で国内向けキーワード上位を狙う（例：「QRコード 作成 無料」「MOV MP4 変換」「OGP画像 作成」「GitHub Contributions 草 グラフ」）
+- 各ページ単体で国内向けキーワード上位を狙う（`description`に「QRコード 作成 無料」「MOV MP4 変換」「OGP画像 作成」「GitHub Contributions 草 グラフ」などの日本語キーワードを含める）
+- `<title>`は英語の簡潔なブランド表記（例：「QR Generator | Toolbox」）。検索キーワードは`description`（日本語）が担う
 - ページ末尾に "無料ツール一覧を見る →" CTA でトップページへ誘導
 - `<html lang="ja">` / `og:locale: ja_JP` / JSON-LDの `inLanguage: "ja"` ・ `offers.priceCurrency: "JPY"` を全アプリで設定
 

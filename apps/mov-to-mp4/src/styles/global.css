@@ -195,15 +195,15 @@ body {
 
 .mov-hero-title {
   color: rgba(255, 255, 255, 0.94);
-  font-family: var(--font-noto-sans-jp), sans-serif;
+  font-family: var(--font-instrument-serif), serif;
   font-size: clamp(36px, 6vw, 60px);
-  font-weight: 700;
+  font-style: italic;
   line-height: 1.05;
 }
 
 .mov-hero-title em {
   color: var(--hub-accent);
-  font-style: normal;
+  font-style: italic;
 }
 
 .mov-hero-desc {
@@ -259,7 +259,7 @@ body {
   color: rgba(255, 255, 255, 0.88);
   font-family: var(--font-noto-sans-jp), sans-serif;
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .mov-dropzone-hint {
@@ -332,7 +332,7 @@ body {
   color: rgba(255, 255, 255, 0.9);
   font-family: var(--font-noto-sans-jp), sans-serif;
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .mov-result-meta {
@@ -434,7 +434,7 @@ body {
   color: rgba(255, 255, 255, 0.78);
   font-family: var(--font-noto-sans-jp), sans-serif;
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .info-card .desc {
